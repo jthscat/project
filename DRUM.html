@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<style>
+#info {
+    position: absolute;
+    top: 0px;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    color: #ffff00
+}
+body {
+    overflow: hidden;
+}
+</style>
+</head>
+
+<body> 
+<!--div id="info">Drum Kit Looping</div-->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r70/three.min.js"></script>
+<script src='https://jyunming-chen.github.io/WebAudio/js/shared.js'></script>
+
+<script>
+var camera, scene, renderer, geometry, material, controls;
+var clock = new THREE.Clock();
+var bassMesh, snareMesh, hihatMesh, recordMesh, metronomeMesh, eraseMesh, infoMesh;
+var sweepLine;
+var tempo = 120;
+var sweepVel = 100 / (60/tempo * 4);
+
+var pickables = [];
+var raycaster;
+var mouse = new THREE.Vector2();
+
+
+var sample;
+var barsInScore = 2;
+var quarterNoteTime = 60/tempo; // seconds
+
+// recording related
+var scoreStartTime;
+var recordOn, loopOn, metronomeOn;
+
+//var metronomeOn = false;
+//var recordOn = false;
+//var loopOn = metronomeOn;
+var score=[];
+var eventMarks = new THREE.Object3D();
+var metronomeOnSign, recordOnSign, quantizeOnSign;
+var quantizeMode; // 0: none, 1: eighth, 2: sixteenth
+var sixteenthTex, eighthTex;
+var headSync = false;
+var beatMark = 0, beatTime;
+
+var kickMark = new THREE.Mesh( new THREE.CircleGeometry( 3,32 ), 
+						new THREE.MeshBasicMaterial({color:0x0000ff}));
+var snareMark = new THREE.Mesh( new THREE.CircleGeometry( 3,32 ), 
+						new THREE.MeshBasicMaterial({color:0x00ff00}));
+var hihatMark = new THREE.Mesh( new THREE.CircleGeometry( 3,32 ), 
+						new THREE.MeshBasicMaterial({color:0xffff00}));
+var onSign = new THREE.Mesh( new THREE.PlaneGeometry( 45,45 ), 
+						new THREE.MeshBasicMaterial({color:0xff0000}));
+
+// class functions (& prototype functions) must precede
+var RhythmSample = function () {
+    loadSounds(this, {
+        click: 'https://jyunming-chen.github.io/WebAudio/metronome_click.wav',
+        ding: 'https://jyunming-chen.github.io/WebAudio/ding.wav',
+        dingding: 'https://jyunming-chen.github.io/WebAudio/dingding.wav',
+        kick: 'https://jyunming-chen.github.io/WebAudio/kick.wav',
+        snare: 'https://jyunming-chen.github.io/WebAudio/snare.wav',
+        hihat: 'https://jyunming-chen.github.io/WebAudio/hihat.wav'
+    });
+};
+
+// play score, exactly ONCE (has 'barsInScore' bars)
+RhythmSample.prototype.playSequence = function (score) {
+    var startTime = context.currentTime;  // in seconds, from webaudio
+    var eighthNoteTime = 60/tempo/2;  // seconds
+
+    for (var ii = 0; ii < score.length; ii++) {
+        if (score[ii].instrument == 'k') 
+            playSound2(this.kick, startTime + score[ii].time * eighthNoteTime, score[ii].intensity);
+        if (score[ii].instrument == 's') 
+            playSound2(this.snare, startTime + score[ii].time * eighthNoteTime, score[ii].intensity);
+        if (score[ii].instrument == 'h') 
+            playSound2(this.hihat, startTime + score[ii].time * eighthNoteTime, score[ii].intensity);
+    }
+
+}
+
+init();
+initAudio();
+animate();
+
+
+////////////// audio related //////////////////////////////
+
+function initAudio () {
+	sample = new RhythmSample();
+
+	quantizeMode = 1; // default eighth
+	recordOn = false;
+	metronomeOn = false;	
+}
+
+function playSound2(buffer, time, intensity) {
+    var gainNode = context.createGain();
+    var source = context.createBufferSource();
+    source.buffer = buffer;
+
+    // Connect source to a gain node
+    source.connect(gainNode);
+    // Connect gain node to destination
+    gainNode.connect(context.destination);
+
+    var gainval = intensity || 0.15;
+    gainNode.gain.value = gainval;
+
+    source[source.start ? 'start' : 'noteOn'](time);
+    
+    /////////////////////////////////
+    // source.start (when, in seconds) 
+    // The 'when' parameter defines when the play will start. 
+    // If 'when' represents a time in the past, the play will start immediately.
+    // https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode/start
+}
+
+// setting beatMark;
+
+function playMetronome(reset) {
+	this.count = this.count == undefined? 0 : this.count+1;
+	if (reset == true) {
+		console.log ('reset metronome');
+		this.count = 0;
+	}
+	
+	if (sample.click != undefined) {
+		if (this.count % (4*barsInScore) == 0) {  // start of score
+			playSound2 (sample.dingding,0,1);
+			headSync = true;
+			beatMark = 0;
+			if (recordOn && scoreStartTime == null) { // ready to start recording
+			   scoreStartTime = context.currentTime;
+			   console.log ('score started...');
+			}
+			if (loopOn)
+				playScore();
+		} else {
+			if (this.count % 4 == 0) {  // start of bar
+				playSound2 (sample.ding, 0, 1);
+			}
+		}
+		playSound2(sample.click, 0, .5);  // time = 0: start immediately
+		++beatMark;  // two-bar: 1,2,3,4, 5,6,7
+		beatTime = context.currentTime;
+		console.log (beatMark + ': ' + beatTime);
+		
+	}
+	if (metronomeOn) {
+		setTimeout(function () {
+			playMetronome();
+		}, quarterNoteTime*1000);
+	}
+}
+
+// triggered by start of metronome
+function playScore () {
+    sample.playSequence(score);
+/*
+ if (loopOn) {
+        setTimeout (function() {
+            playScore();
+        }, quarterNoteTime*4*barsInScore*1000);
+    }
+	*/
+}
+
+function createButton (name, image) {
+    var texture = THREE.ImageUtils.loadTexture(image);
+    var geometry = new THREE.PlaneGeometry(40, 40);
+    var material = new THREE.MeshBasicMaterial({map: texture});
+    var mesh = new THREE.Mesh(geometry, material);
+	mesh.name = name;
+	scene.add (mesh);
+    return mesh;
+}
+
+/////// three.js related //////////////////////////
+function init() {
+    scene = new THREE.Scene();
+
+  //  camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 1, 1000);
+    camera = new THREE.OrthographicCamera (-120,120,120,-120, -1000,1000);
+    camera.position.z = 150;
+    scene.add(camera);
+
+    THREE.ImageUtils.crossOrigin = '';
+    
+    var texture = THREE.ImageUtils.loadTexture('http://i.imgur.com/w8265dV.png');
+    var geometry = new THREE.PlaneGeometry(20, 20);
+    var material = new THREE.MeshBasicMaterial({map: texture, transparent:true});
+    var infoMesh = new THREE.Mesh(geometry, material);
+	infoMesh.name = 'info';
+	infoMesh.position.set (100,100,5);
+	scene.add (infoMesh);
+	
+	bassMesh = createButton ('bass', 'http://i.imgur.com/shUTQ9x.png');
+	bassMesh.material.transparent=true;
+	bassMesh.position.set (-50,70,5);
+	
+    snareMesh = createButton ('snare','http://i.imgur.com/EXojtJr.png');
+    snareMesh.material.transparent=true;
+	snareMesh.position.set (0,70,5);
+
+	hihatMesh = createButton ('hihat','http://i.imgur.com/TZOKgMJ.png');
+    hihatMesh.material.transparent=true;
+	hihatMesh.position.set (50,70,5);
+
+	recordMesh = createButton ('record', 'http://i.imgur.com/Gu1CEHZ.png');
+	recordMesh.material.transparent=true;
+    recordMesh.position.set (-80,-60,5);
+	recordOnSign = onSign.clone();
+	recordOnSign.position.copy (recordMesh.position);
+	scene.add (recordOnSign);
+	
+	eraseMesh = createButton ('erase', 'http://i.imgur.com/2YVCwkK.png');
+	eraseMesh.material.transparent=true;
+    eraseMesh.position.set (80,-60,5);
+
+	metronomeMesh = createButton ('metronome', 'http://i.imgur.com/zZdSFN6.jpg');
+    metronomeMesh.position.set (-30,-60,5);
+	metronomeOnSign = onSign.clone();
+	metronomeOnSign.position.copy (metronomeMesh.position);
+	scene.add (metronomeOnSign);
+	
+	quantizeMesh = createButton ('quantize', 'http://i.imgur.com/xpurxmq.jpg');
+	eighthTex = THREE.ImageUtils.loadTexture ('http://i.imgur.com/xpurxmq.jpg');
+	sixteenthTex = THREE.ImageUtils.loadTexture('http://i.imgur.com/sOKfaMW.jpg');
+    quantizeMesh.position.set (30,-60,5);
+	quantizeOnSign = onSign.clone();
+	quantizeOnSign.position.copy (quantizeMesh.position);
+	scene.add (quantizeOnSign);
+
+	pickables.push (bassMesh, snareMesh, hihatMesh, recordMesh, eraseMesh, metronomeMesh, quantizeMesh, infoMesh);
+	
+    geometry = new THREE.PlaneGeometry(200, 30);
+    material = new THREE.MeshBasicMaterial({color:0xffffff});
+    loopArea = new THREE.Mesh(geometry, material);
+    scene.add (loopArea);
+    loopArea.position.set (0,0,-2);
+    
+	scene.add (eventMarks);
+	
+	sweepLine = new THREE.Mesh (new THREE.PlaneGeometry(3,30), new THREE.MeshBasicMaterial({color:0xff5555}));
+	scene.add (sweepLine);
+
+    var gridXZ = new THREE.GridHelper(100, 12.5);
+    gridXZ.setColors(new THREE.Color(0xff0000), new THREE.Color(0xffffff));
+    scene.add(gridXZ);
+    gridXZ.rotation.x = Math.PI/2;
+    //gridXZ.setColors ('red', 'red');
+
+    renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xcccccc);
+
+    document.body.appendChild(renderer.domElement);
+    window.addEventListener('resize', onWindowResize, false);
+	
+	raycaster = new THREE.Raycaster();
+	document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+	document.addEventListener('touchstart', onDocumentTouchStart, false);
+}
+
+function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}
+
+function registerEvent (now, instrument) {
+	var barTime = 4*quarterNoteTime;
+/*
+	var realElapsedTime = now - scoreStartTime;
+	// looping: 
+	// eventTime: in number of eighthNotes from start
+	// can be [0,..., 8,...., 16,...., 24,....,32,....36)
+	// (for our 5-bar score)
+	var scoreTime = barsInScore * barTime; 
+	var loopTime = realElapsedTime % scoreTime; // [0, scoreTime)
+	var whichBar = Math.floor (loopTime/barTime); // [0,..., barsInScore-1]
+	var eventFraction = loopTime % barTime / barTime; // [0,1), fraction of a bar
+
+	var eventTime = whichBar + eventFraction; // [0, barsInScore)
+*/
+	
+	// beatMark & beatTime version
+	eventTime = Math.floor((beatMark-1)/4) + (now-beatTime)/barTime + (beatMark-1)%4*0.25;
+	console.log ('int: ' + Math.floor ((beatMark-1)/4));
+	console.log ('frac: ' + ((now-beatTime)/barTime + (beatMark-1)%4*0.25));
+	console.log ('event(before q): ' + eventTime);
+	var factor = 0;
+	if (quantizeMode == 1)
+		factor = 8;
+	else if (quantizeMode == 2)
+		factor = 16
+		
+	if (factor != 0) 
+		eventTime = Qquantize (eventTime, factor);
+		
+//		eventTime = Qquantize (whichBar+eventFraction, factor);  
+//	else // no quantize
+	//	eventTime = loopTime/barTime;      // [0, barsInScore)                  
+	console.log ('event(after q): ' + eventTime);
+
+	// handling tail == head
+	if (8*eventTime == barsInScore*8)
+		eventTime = 0;
+		
+	var instrument_cap;
+	if (instrument == 'bass') 
+		instrument_cap = 'k';
+	else if (instrument == 'snare')
+		instrument_cap = 's';
+	else if (instrument == 'hihat')
+		instrument_cap = 'h';
+	var event = {time: 8*eventTime, instrument: instrument_cap, intensity: 1.0};
+	
+	score.push (event);
+	return event;
+}
+
+function kick () {
+    playSound2(sample.kick, 0, 1);  // time = 0: start immediately
+
+    if (recordOn) {  // in recording ...
+        var now = context.currentTime;
+		var event = registerEvent (now, 'bass');
+		console.log (event);
+
+		// sweeper animation
+		var mesh = kickMark.clone();
+		var xpos = -100 + 200 * event.time/8/barsInScore;
+		mesh.position.set (xpos, 0, 6);
+		eventMarks.add (mesh);
+	}
+}
+
+function snare() {
+//console.log ('in snare()');
+    playSound2(sample.snare, 0, 1);  // time = 0: start immediately
+
+    if (recordOn) {  // in recording ...
+        var now = context.currentTime;
+		var event = registerEvent (now, 'snare');
+		console.log (event);
+
+		// sweeper animation
+		var mesh = snareMark.clone();
+		var xpos = -100 + 200 * event.time/8/barsInScore;
+		mesh.position.set (xpos, 8, 6);
+		eventMarks.add (mesh);
+	}
+}
+
+function hihat() {
+//console.log ('in hihat()');
+    playSound2(sample.hihat, 0, 1);  // time = 0: start immediately
+
+    if (recordOn) {  // in recording ...
+        var now = context.currentTime;
+		var event = registerEvent (now, 'hihat');
+		console.log (event);
+
+		// sweeper animation
+		var mesh = hihatMark.clone();
+		var xpos = -100 + 200 * event.time/8/barsInScore;
+		mesh.position.set (xpos, -8, 6);
+		eventMarks.add (mesh);
+	}
+}
+
+function Qquantize (the_number,base) {  // 3.55, 8
+    var whole = Math.floor (the_number);  // 3
+    var fraction = the_number - whole;    // 0.55
+    return (whole + quantizeFraction(fraction,base));
+}
+
+function quantizeFraction (number, base) {
+    // number = c1*base^-1 + c2*base^-2 + ....
+
+    // number*base = c1*base^0 + c2*base^-1 + ...
+    var intPart = Math.floor (number * base); // c1
+    var fraction = number - intPart/base; // c2*base^-2 + ... 
+    
+    // 0.c1 or 0.(c1+1)?
+    // fraction*base = c2*base^-1 + ...
+    // fraction*base*base = c2*base^0 + ....
+    // if (c2 >= base/2) 0.(c1+1)
+    // else              0.(c1)
+    if (Math.floor(fraction * base * base) >= base/2)
+        intPart += 1;
+    return (intPart/base);
+}
+
+function onDocumentMouseDown( event ) {
+	event.preventDefault();
+	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+
+	raycaster.setFromCamera( mouse, camera );
+	var intersects = raycaster.intersectObjects( pickables );
+	
+	
+	if ( intersects.length > 0 ) {
+		if (intersects[0].object.name === "bass") {
+			console.log ('strike bass');
+			kick();
+		} else if (intersects[0].object.name === "snare") {
+			console.log ('strike snare');
+			snare();
+		} else if (intersects[0].object.name === "hihat") {
+			console.log ('strike hihet');
+			hihat();
+		} else if (intersects[0].object.name === "record") {
+			console.log ('toggle record');
+			recordOn = ! recordOn;
+			// start or end of recording, set scoreStartTime to null
+		    scoreStartTime = null; 
+		} else if (intersects[0].object.name === "quantize") {
+			console.log ('toggle quantize');
+			quantizeMode = (quantizeMode+1)%3;
+			if (quantizeMode == 2) {
+				quantizeMesh.material.map = sixteenthTex;
+			} else  if (quantizeMode == 1) {
+				quantizeMesh.material.map = eighthTex;
+			}
+		} else if (intersects[0].object.name === 'erase') {
+			scene.remove (eventMarks); // necessary!!
+			eventMarks = new THREE.Object3D();
+			scene.add (eventMarks);
+			score=[];
+		} else if (intersects[0].object.name === 'metronome') {
+			metronomeOn = !metronomeOn;
+			loopOn = metronomeOn;
+			if (metronomeOn) {
+				playMetronome(true); //playScore();
+			} else { // metronome off
+				scoreStartTime = null;
+			}
+		} else if (intersects[0].object.name === 'info') {
+			myFunction();
+		}
+	}
+}
+
+function myFunction() {
+    var x;
+	var msg = 
+'INSTRUCTIONS:\n\
+1. Punch metronome & record to start\n\
+2. two bars count in; loop recording starts as sweeper moves\n\
+3. Press trash to erase.\n\
+4. Quantization mode: eighth, sixteenth, none.\n\n\
+PROBLEM:\n\
+serious iPhone syncing problem\n\
+use metronome to set beatMark & beatTime;\n\
+fixed sweep syncing problem;\n\
+but playScore lag still exist,\n\
+especially at second bar\n\
+\nTO-DO\'s:\n\
+1. take-based delete (only delete the last take),\n\
+or event-based deletion (pick to delete)\n\
+2. BPM adjustment (now set at 120)';
+
+	
+    if (confirm(msg) == true) {
+        x = "You pressed OK!";
+    } else {
+        x = "You pressed Cancel!";
+    }
+//    document.getElementById("demo").innerHTML = x;
+}	
+
+function onDocumentTouchStart(event) {
+	event.preventDefault(); // what is this?
+	
+	var touches = event.changedTouches;
+	for (var i = 0; i < touches.length; i++) {
+		//console.log ('start: ' + touches[i].identifier + ': ' + touches[i].pageX + ', ' + touches[i].pageY);
+
+		mouse.x = ( touches[i].pageX / window.innerWidth ) * 2 - 1;
+		mouse.y = - ( touches[i].pageY / window.innerHeight ) * 2 + 1;
+
+		raycaster.setFromCamera( mouse, camera );
+		var intersects = raycaster.intersectObjects( pickables );
+		
+	if ( intersects.length > 0 ) {
+		if (intersects[0].object.name === "bass") {
+			console.log ('strike bass');
+			kick();
+		} else if (intersects[0].object.name === "snare") {
+			console.log ('strike snare');
+			snare();
+		} else if (intersects[0].object.name === "hihat") {
+			console.log ('strike hihet');
+			hihat();
+		} else if (intersects[0].object.name === "record") {
+			console.log ('toggle record');
+			recordOn = ! recordOn;
+			scoreStartTime = null;  // ready to set it to loophead
+		} else if (intersects[0].object.name === "quantize") {
+			console.log ('toggle quantize');
+			quantizeMode = (quantizeMode+1)%3;
+			if (quantizeMode == 2) {
+				quantizeMesh.material.map = sixteenthTex;
+			} else  if (quantizeMode == 1) {
+				quantizeMesh.material.map = eighthTex;
+			}
+		} else if (intersects[0].object.name === 'erase') {
+			scene.remove (eventMarks); // necessary!!
+			eventMarks = new THREE.Object3D();
+			scene.add (eventMarks);
+			score=[];
+		} else if (intersects[0].object.name === 'metronome') {
+			metronomeOn = !metronomeOn;
+			loopOn = metronomeOn;
+			if (metronomeOn) {
+				playMetronome(true); //playScore();
+			} else { // metronome off
+				scoreStartTime = null;
+			}
+		} else if (intersects[0].object.name === 'info') {
+			myFunction();
+		}
+	}
+
+	/*	
+		if ( intersects.length > 0 ) {
+			if (intersects[0].object.name === "bass") {
+				console.log ('strike bass');
+				playSound2(sample.kick, 0, 1);  	
+			} else if (intersects[0].object.name === "snare") {
+				console.log ('strike snare');
+				playSound2(sample.snare, 0, 1); 
+			} else if (intersects[0].object.name === "hihat") {
+				console.log ('strike hihat');
+				playSound2(sample.hihat, 0, 1); 
+			}
+		}
+	*/	
+	}
+}
+
+function animate() {
+/*
+	if (scoreStartTime != null) {
+	   var barTime = 4*quarterNoteTime;
+        var scoreTime = barsInScore * barTime; 
+		var realElapsedTime = context.currentTime - scoreStartTime;
+        var loopTime = realElapsedTime % scoreTime; // [0, scoreTime)
+		
+		var ratio = loopTime  / scoreTime; // [0,1]
+		var xx = -100 + ratio*200;
+		console.log ('beat: ' + beatMark);
+		
+		if (headSync) {
+			console.log ('syncing...');
+			console.log (' ratio was: ' + ratio);
+			xx = -100;  // syncing...
+			headSync = false;
+		}
+		sweepLine.position.set (xx, 0, 1);
+    }
+*/
+	if (scoreStartTime != null) {
+	// beatMark based animation
+		var dx = 200/(barsInScore * 4);
+		var xx = -100 + (beatMark -1)*dx;
+		sweepLine.position.set (xx, 0, 1);
+	}
+	
+	if (recordOn) 
+		recordOnSign.visible = true;
+	else
+		recordOnSign.visible = false;
+	if (metronomeOn)
+		metronomeOnSign.visible = true;
+	else
+		metronomeOnSign.visible = false;
+	if (quantizeMode == 0)
+		quantizeOnSign.visible = false;
+	else
+		quantizeOnSign.visible = true;
+
+	requestAnimationFrame(animate);
+    render();
+}
+
+function render() {
+    renderer.render(scene, camera);
+}
+
+</script>
+</body>
+
+</html>
