@@ -21,9 +21,14 @@ body {
 <body> 
 <!--div id="info">Drum Kit Looping</div-->
 <script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r70/three.min.js"></script>
+<!-- 
+ -->
 <script src='https://jyunming-chen.github.io/WebAudio/js/shared.js'></script>
 
-<script>
+<script type="module">
+
+//import {BufferLoader,loadSounds,context} from "./soundTest.js"
+
 var camera, scene, renderer, geometry, material, controls;
 var clock = new THREE.Clock();
 var bassMesh, snareMesh, hihatMesh, recordMesh, metronomeMesh, eraseMesh, infoMesh;
@@ -130,9 +135,10 @@ function playSound2(buffer, time, intensity) {
 }
 
 // setting beatMark;
-
+/*
 function playMetronome(reset) {
-	this.count = this.count == undefined? 0 : this.count+1;
+	//this.count = undefined;
+	this.count = this.count == undefined ? 0 : this.count+1;
 	if (reset == true) {
 		console.log ('reset metronome');
 		this.count = 0;
@@ -162,11 +168,11 @@ function playMetronome(reset) {
 	}
 	if (metronomeOn) {
 		setTimeout(function () {
-			playMetronome();
+			//playMetronome();
 		}, quarterNoteTime*1000);
 	}
 }
-
+*/
 // triggered by start of metronome
 function playScore () {
     sample.playSequence(score);
@@ -237,7 +243,7 @@ function init() {
 	metronomeOnSign.position.copy (metronomeMesh.position);
 	scene.add (metronomeOnSign);
 	
-	quantizeMesh = createButton ('quantize', 'http://i.imgur.com/xpurxmq.jpg');
+	let quantizeMesh = createButton ('quantize', 'http://i.imgur.com/xpurxmq.jpg');
 	eighthTex = THREE.ImageUtils.loadTexture ('http://i.imgur.com/xpurxmq.jpg');
 	sixteenthTex = THREE.ImageUtils.loadTexture('http://i.imgur.com/sOKfaMW.jpg');
     quantizeMesh.position.set (30,-60,5);
@@ -249,7 +255,7 @@ function init() {
 	
     geometry = new THREE.PlaneGeometry(200, 30);
     material = new THREE.MeshBasicMaterial({color:0xffffff});
-    loopArea = new THREE.Mesh(geometry, material);
+    let loopArea = new THREE.Mesh(geometry, material);
     scene.add (loopArea);
     loopArea.position.set (0,0,-2);
     
@@ -300,9 +306,6 @@ function registerEvent (now, instrument) {
 	
 	// beatMark & beatTime version
 	eventTime = Math.floor((beatMark-1)/4) + (now-beatTime)/barTime + (beatMark-1)%4*0.25;
-	console.log ('int: ' + Math.floor ((beatMark-1)/4));
-	console.log ('frac: ' + ((now-beatTime)/barTime + (beatMark-1)%4*0.25));
-	console.log ('event(before q): ' + eventTime);
 	var factor = 0;
 	if (quantizeMode == 1)
 		factor = 8;
@@ -311,13 +314,7 @@ function registerEvent (now, instrument) {
 		
 	if (factor != 0) 
 		eventTime = Qquantize (eventTime, factor);
-		
-//		eventTime = Qquantize (whichBar+eventFraction, factor);  
-//	else // no quantize
-	//	eventTime = loopTime/barTime;      // [0, barsInScore)                  
-	console.log ('event(after q): ' + eventTime);
 
-	// handling tail == head
 	if (8*eventTime == barsInScore*8)
 		eventTime = 0;
 		
@@ -448,7 +445,7 @@ function onDocumentMouseDown( event ) {
 			metronomeOn = !metronomeOn;
 			loopOn = metronomeOn;
 			if (metronomeOn) {
-				playMetronome(true); //playScore();
+				//playMetronome(true); //playScore();
 			} else { // metronome off
 				scoreStartTime = null;
 			}
@@ -530,7 +527,7 @@ function onDocumentTouchStart(event) {
 			metronomeOn = !metronomeOn;
 			loopOn = metronomeOn;
 			if (metronomeOn) {
-				playMetronome(true); //playScore();
+				//playMetronome(true); //playScore();
 			} else { // metronome off
 				scoreStartTime = null;
 			}
