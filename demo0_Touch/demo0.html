@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<body>
+<style>
+
+body:focus{
+	font-size: 16px;
+	overflow: hidden;
+	margin:0;
+	padding:0;
+	user-select: none;
+	-webkit-user-select: none;
+}
+body {
+	font-size: 16px;
+	overflow: hidden;
+	margin:0;
+	padding:0;
+	user-select: none;
+	-webkit-user-select: none;
+}
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    select,
+    textarea,
+    body {
+        font-size: 16px;
+		overflow: hidden;
+		margin:0;
+		padding:0;
+		user-select: none;
+    }
+}
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+    select:focus,
+    textarea:focus,
+    body:focus {
+        font-size: 16px;
+		overflow: hidden;
+		margin:0;
+		padding:0;
+		user-select: none;
+    }
+}
+</style>  
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+<audio id="hitwall" style="display:none">
+<source src="./sound/hitwall.mp3" type='audio/mp3'>
+</audio>
+<audio id="hit" style="display:none">
+<source src="./sound/hit.mp3" type='audio/mp3'>
+</audio>
+<audio id="inhole" style="display:none">
+<source src="./sound/inhole.wav" type='audio/wav'>
+</audio>
+
+<audio id="backgroundMusic" style="display:none">
+<source src="./sound/backGroundMusic.mp3" type='audio/mp3'>
+</audio>
+
+<script type="module">
+import {init,animate} from "./js/main.js";
+//javascript:(function(){var script=document.createElement('script');script.onload=function(){var stats=new Stats();document.body.appendChild(stats.dom);requestAnimationFrame(function loop(){stats.update();requestAnimationFrame(loop)});};script.src='https://mrdoob.github.io/stats.js/build/stats.min.js';document.head.appendChild(script);})()
+init();
+animate();
+
+</script>
+</body>
+</html>
