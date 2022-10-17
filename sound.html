@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<style>
+
+
+</style>
+</head>
+
+<body> 
+<button id="play" disabled>Yodel!</button>
+<button id="play2" disabled>test!</button>
+<script>
+(function () {
+  'use strict';
+
+  const URL ='https://flyyu5683.github.io/project2/demo0_Touch/sound/hit.mp3';
+    const URL2 ='https://flyyu5683.github.io/project2/demo0_Touch/sound/hit.mp3';
+    
+  const context = new AudioContext();
+  const playButton = document.querySelector('#play');
+  const playButton2 = document.querySelector('#play2');
+    
+  let yodelBuffer;
+  let yodelBuffer2;
+
+  window.fetch(URL)
+    .then(response => response.arrayBuffer())
+    .then(arrayBuffer => context.decodeAudioData(arrayBuffer))
+    .then(audioBuffer => {
+      playButton.disabled = false;
+      yodelBuffer = audioBuffer;
+    });
+     window.fetch(URL2)
+    .then(response => response.arrayBuffer())
+    .then(arrayBuffer => context.decodeAudioData(arrayBuffer))
+    .then(audioBuffer => {
+      playButton2.disabled = false;
+      yodelBuffer2 = audioBuffer;
+    });
+    
+    playButton.onclick = () => play(yodelBuffer)
+    playButton2.onclick = () => play(yodelBuffer2)
+
+  function play(audioBuffer) {
+    const source = context.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(context.destination);
+    source.start();
+  }
+}());
+
+
+</script>
+</body>
+
+</html>
