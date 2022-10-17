@@ -17,8 +17,8 @@ var car1MoveSign = 1,car2MoveSign = -1;
 var inholeSound;
 var sceneDatas = []
 
-const hitSound = 'https://flyyu5683.github.io/project2/demo0_Touch/sound/hit.mp3';
-const inHoleSound = 'https://flyyu5683.github.io/project2/demo0_Touch/sound/inhole.wav';
+var hitSound = 'https://flyyu5683.github.io/project2/demo0_Touch/sound/hit.mp3';
+var inHoleSound = 'https://flyyu5683.github.io/project2/demo0_Touch/sound/inhole.wav';
 let hitSoundBuffer;
 let inholeSoundBuffer;
 const context = new AudioContext();
