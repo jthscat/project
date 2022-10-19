@@ -166,6 +166,7 @@ function wallMove(){
 	obstacle2.position.y=3;
 	obstacle3.position.y=3;
 	wallchange2=false;
+	play(inholeSoundBuffer);
   }
   if(obstacle2.position.y<21&&wallchange2==false){
     obstacle2.position.y+=0.1;
@@ -203,5 +204,13 @@ function setObstaclePos(index){
 	car1MoveSign = sceneDatas[index][7]
 	car2MoveSign = sceneDatas[index][8]
 }
+
+function play(audioBuffer) {
+    const source = context.createBufferSource();
+    source.buffer = audioBuffer;
+    source.connect(context.destination);
+    source.start();
+  }
+  
 export {init,animate,steve,balls,writeObstaclePos,setObstaclePos}
 export {hitSoundBuffer,inholeSoundBuffer,context}
