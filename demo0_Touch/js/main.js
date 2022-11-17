@@ -6,7 +6,7 @@ import {Particle} from './Particle.js'
 import {buildCamAndSen,render,scene,sceneMap,start} from './render.js'
 import {Steve} from './Steve.js'
 import {touchStart,touchMove,touchEnd,touchEvent} from "./touchEvent.js"
-import {setPos} from "./touchEvent.js"
+import {setPos,context} from "./touchEvent.js"
 
 var steve,balls = [];
 var clock = new THREE.Clock();
@@ -26,7 +26,6 @@ var hitSound = 'https://flyyu5683.github.io/project2/demo0_Touch/sound/hit.mp3';
 var inHoleSound = 'https://flyyu5683.github.io/project2/demo0_Touch/sound/inhole.wav';
 let hitSoundBuffer;
 let inholeSoundBuffer;
-const context = new AudioContext();
 
 function init() {
   window.ontouchstart = function (e){ e.preventDefault()};

@@ -32,7 +32,7 @@ var isCharge = false;
 
 var fovVal = 40,fovX = 0;
 var inHoleSound = 'https://flyyu5683.github.io/project2/demo0_Touch/sound/inhole.wav';
-const context = new AudioContext();
+var context = new AudioContext();
 
 function predictLine(){
 	if(!cancelCharge){
@@ -505,4 +505,4 @@ function inHoleBreak(){
 export {theta,beforeHit,useOrb,countSwingReset,countSwing}
 export {touchStart,touchMove,touchEnd,touchEvent}
 export {resetPlayData,setPos,replayAll,resetCameraAngle,inHoleBreak}
-export {fovX}
+export {fovX,context}
