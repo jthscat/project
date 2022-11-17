@@ -78,7 +78,7 @@ function render() {
 		}
 	  } 
 	  else{
-		  renderer.render(sceneMap, cameraForMap)
+		  renderer.render(scene,cameraOrbit);
 	  }
   renderer.render(sceneHUD, cameraHUD);
   if(inLoading){

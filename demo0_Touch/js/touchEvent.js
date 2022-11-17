@@ -6,12 +6,14 @@ import * as THREE from 'https://cdn.skypack.dev/three@0.136';
 import {cameraOnPlayer,renderer,textureAnimate,start,scene,HUDPress,cameraButtons,cameraSlider,sliderGroup,level,isOver,HUDForInHole} from './render.js'
 import {steve,balls,writeObstaclePos,setObstaclePos} from './main.js'
 import {stop,stopTrue} from './Steve.js'
+import {inholeSoundBuffer} from './main.js'
 
 var beforeHit = true;
 var countSwing = 1;
 var power = 0,sign = 1.0,theta = 0.5;
 var lineList = [];
 var matLine4;
+
 
 var ballMove = false;
 var useOrb = false;
@@ -29,6 +31,8 @@ var cameraMove = false;
 var isCharge = false;
 
 var fovVal = 40,fovX = 0;
+var inHoleSound = 'https://flyyu5683.github.io/project2/demo0_Touch/sound/inhole.wav';
+const context = new AudioContext();
 
 function predictLine(){
 	if(!cancelCharge){
@@ -80,6 +84,10 @@ function predictLine(){
 }
 function touchStart(event){
 	event.preventDefault();
+	var source = context.createBufferSource();
+    source.buffer = inholeSoundBuffer;
+    source.connect(context.destination);
+    source.start();
 	touchHUD = HUDPress();
 	if(start && touchHUD === 0){
 		touch.x = (event.touches[0].pageX / window.innerWidth) * 2 - 1;

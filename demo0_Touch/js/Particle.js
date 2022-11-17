@@ -31,7 +31,7 @@ class Particle {
 	this.r = 1;
 	this.runInHole = false;
 	this.choose = true;
-	
+	this.useG = true;
     scene.add(this.mesh);
 
   }
@@ -58,7 +58,7 @@ class Particle {
 	this.mesh.rotateOnWorldAxis(this.n.clone().cross(this.vel).normalize(), this.theta);	
 
     this.vel.copy(velH.add(velV))
-	if(start && this.choose)
+	if(start && this.choose && this.useG)
 		this.vel.add(this.force.clone().multiplyScalar(this.m).multiplyScalar(dtt));
     this.pos.add(this.vel.clone().multiplyScalar(dtt));
 
@@ -323,7 +323,7 @@ class Particle {
 		let height = new THREE.Vector3();
 		height = floor.localToWorld(new THREE.Vector3(0,y,0)).y + floor.y;
 		
-		if(UV[0] >= 0 && UV[0] <= 1 && UV[1] >= 0 && UV[1] <= 1 && this.pos.y >= height - this.r && this.pos.y <= height + this.r){
+		if(UV[0] >= 0 && UV[0] <= 1 && UV[1] >= 0 && UV[1] <= 1 && this.pos.y - this.r <= height && this.pos.y + this.r * 10 >= height){
 			count++;
 			this.pos.set(this.pos.x, floor.heightFunc(this.pos.x, this.pos.z) + this.r + floor.y, this.pos.z);
 			let temp = floor.inHeightFunc(this.pos.x,this.pos.z);
@@ -391,7 +391,8 @@ class Particle {
   }
   start(){
 	this.vel.set(0,0,0);
-	this.pos.set(0,1,40);
+	this.pos.set(0,0,0);
+	//this.pos.set(0,1,40);
 	//this.pos.set(230,81,-300); level 3
   }
   play(audioBuffer) {

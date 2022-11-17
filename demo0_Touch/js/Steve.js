@@ -14,6 +14,7 @@ var matLine;
 var clock = new THREE.Clock();
 var ts = clock.getElapsedTime();
 var ts2 = clock.getElapsedTime();
+var sign=1;
 
 var texture;
 
@@ -72,8 +73,12 @@ class Steve{
   buildsteve(){
   var loader = new THREE.TextureLoader();
   loader.setCrossOrigin('');
-  texture = loader.load('http://i.imgur.com/dSQ0A9W.png');
-  
+  if(sign==1){
+  texture = loader.load('https://i.imgur.com/dSQ0A9W.png');
+  }
+  else if(sign==2){
+  texture = loader.load('https://i.imgur.com/Mpb9QlQ.png'); 
+  }
   this.head = this.buildHead(8, 8, 8);
   this.head.rotation.y = Math.PI / 2;
   this.torso = this.buildTorso(8, 12, 4);
@@ -86,8 +91,12 @@ class Steve{
   this.torso.position.set(0, HH, 0);
   this.lArm = this.buildLArm(4, 12, 4);
   this.hands.add(this.lArm);
+  if(sign==1){
   this.lArm.position.set(0, HH / 2 - 6, -(WW + WW / 2 + 3));
-  
+  }
+  else{
+	 this.lArm.position.set(0.6, HH / 2 - 3.5, -(WW + WW / 2 + 5)); 
+  }
   this.lLeg = this.buildLLeg(4, 12, 4);
   this.body.add(this.lLeg);
   this.lLeg.position.set(0, 12, -WW / 2);
@@ -98,8 +107,13 @@ class Steve{
 
   this.rArm = this.buildRArm(4, 12, 4);
   this.hands.add(this.rArm);
+  if(sign==1){
   this.rArm.position.set(0, HH / 2 - 6, WW + WW / 2 - 3);
-  
+  }
+  else
+  {
+   this.rArm.position.set(-0.6, HH / 2 - 5.5, WW + WW / 2 - 1);  
+  }
   this.hands.position.y = 9.5;
   this.hands.position.x = -0.5;
 	
@@ -110,6 +124,7 @@ class Steve{
   //hands.add(axis);
   this.torso.add(this.hands);
 
+  if(sign==1){
   this.Puffer = this.buildPuffer()
   scene.add(this.Puffer);
 
@@ -145,6 +160,13 @@ class Steve{
   //this.camera.position.set(-2,1,10)
   this.direct.visible = false;
   this.resetPose()
+  sign=2;
+  }
+  else{
+	  this.direct.add(this.body);
+	  scene.add(this.direct);
+      console.log('123');	  
+  }
   //////////////////////////////////////////////////////////
 }
   buildFootPrint(){

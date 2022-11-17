@@ -16,7 +16,14 @@ var class3 = new THREE.Group(),class3Rotate = new THREE.Group();
 var obstacle1=new THREE.Group();
 var obstacle2=new THREE.Group();
 var obstacle3=new THREE.Group();
-var car,car2;
+var car,car2,redhorse2G;
+var quad_uvs =
+[
+0.4, 0.0,
+1.0, 0.0,
+1.0, 1.0,
+0.0, 1.0
+];
 
 function buildTerrain(){
 	buildPlane();
@@ -25,7 +32,10 @@ function buildTerrain(){
 	buildPillar();
 	buildfloors();
 	buildStoneWall();
+	buildClass3Wall();
 	buildArcWalls()
+	buildChess();
+	buildGoal();
 	walls.push(level1Walls,level2Walls,level3Walls)
 	class1.position.z = 30;
 	scene.add(class1)
@@ -236,62 +246,23 @@ function buildPlane(){
 	box2.receiveShadow = true;
 	scene.add(box2);
 
-	let hole2 = createMultiMaterialObject(ground, [materialForHole, material1]);
+	/*let hole2 = createMultiMaterialObject(ground, [materialForHole, material1]);
     //var hole2= new THREE.Mesh(new THREE.PlaneGeometry(50,50),new THREE.MeshPhongMaterial({map: texture2,side:THREE.DoubleSide,alphaMap:alpha,alphaTest: 0.1,}));
 	hole2.rotation.x=-Math.PI/2;  
 	hole2.position.set(150,0,-300);
 	hole2.rotation.z = Math.PI/2;
 	hole2.receiveShadow = true;
+	
 
 	plane = new FinitePlane(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1),hole2, 50 * 1.5, table2);
 	plane.update()
 	planes.push(plane);
+	*/
 	
 	class2.add(table2.clone(),box2.clone())
 	
 	//class3
 	
-	table3 = new THREE.Group();
-	scene.add(table3);
-	table3.updateMatrixWorld()
-	
-	var floor6 = new THREE.Mesh(new THREE.PlaneGeometry(150,50), new THREE.MeshPhongMaterial({map: texture2,side:THREE.DoubleSide}));
-	floor6.material.map.repeat.set( 3, 3 );
-	floor6.rotation.x = -Math.PI / 2;
-	floor6.rotation.y = Math.PI / 2/3;
-	floor6.position.y = 42.5;
-	floor6.position.z = -300;
-	floor6.position.x = 339.8;
-	floor6.receiveShadow = true;
-	  
-	plane = new FinitePlane(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1), floor6, 150 * 1.5, table3);
-	plane.update()
-	planes.push(plane);
-	  
-	var floor7 = new THREE.Mesh(new THREE.PlaneGeometry(50, 50), new THREE.MeshPhongMaterial({map: texture2,side:THREE.DoubleSide}));
-	floor7.material.map.repeat.set( 3, 3 );
-	floor7.rotation.x = -Math.PI / 2;
-	floor7.position.y = 5;
-	floor7.position.z = -300;
-	floor7.position.x = 429.8;
-	floor7.receiveShadow = true;
-	  
-	plane = new FinitePlane(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1), floor7, 150 * 1.5, table3);
-	plane.update()
-	planes.push(plane);
-
-	var hole3= new THREE.Mesh(new THREE.PlaneGeometry(50,50),new THREE.MeshPhongMaterial({map: texture2,side:THREE.DoubleSide,alphaMap:alpha,alphaTest: 0.5,}));
-	hole3.rotation.x=-Math.PI/2;  
-	hole3.position.set(479.8,5,-300);
-	hole3.rotation.z = Math.PI/2 ;
-	hole3.material.map.repeat.set(3, 3);
-	hole3.receiveShadow = true;
-
-	plane = new FinitePlane(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1),hole3, 50 * 1.5, table3);
-	plane.update()
-	planes.push(plane);
-	
-	class3.add(table3.clone())
 	
 	//big floor
 	var loader2 = new THREE.TextureLoader();
@@ -386,7 +357,7 @@ function buildWalls(){
   level2Walls[5].mesh.position.set(-10, 3, -30)
   level2Walls[5].mesh.rotation.y = -Math.PI / 2;
   obstacle1.add(level2Walls[0].mesh,level2Walls[3].mesh,level2Walls[4].mesh,level2Walls[5].mesh); 
-  scene.add(obstacle1);
+  //scene.add(obstacle1);
   
   for(var i = 0; i < 6; i++){
 	  if(i <2){
@@ -411,7 +382,7 @@ function buildWalls(){
   level2Walls[9].mesh.position.set(10, -15, -30)
   level2Walls[9].mesh.rotation.y = -Math.PI / 2;
   obstacle2.add(level2Walls[1].mesh,level2Walls[6].mesh,level2Walls[8].mesh,level2Walls[9].mesh); 
-  scene.add(obstacle2);
+  //scene.add(obstacle2);
   level2Walls[7].mesh.position.set(-16.5, -7.4, -30)
   level2Walls[7].mesh.rotation.x = -Math.PI / 2;
   level2Walls[10].mesh.position.set(-10, -15, -30)
@@ -419,7 +390,7 @@ function buildWalls(){
   level2Walls[11].mesh.position.set(-22.5, -15, -30)
   level2Walls[11].mesh.rotation.y = -Math.PI / 2;  
   obstacle3.add(level2Walls[2].mesh,level2Walls[7].mesh,level2Walls[10].mesh,level2Walls[11].mesh); 
-  scene.add(obstacle3);
+  //scene.add(obstacle3);
   obstacle1.position.z =-200;
   obstacle2.position.z =-200;
   obstacle3.position.z =-200;
@@ -461,7 +432,7 @@ function buildWalls(){
   //car.rotation.y = -Math.PI / 2;
   car.position.set(75,2.5,-300)
   
-  scene.add(car);
+  //scene.add(car);
   
   
   level2Walls[12].mesh.rotation.y = -Math.PI / 2;
@@ -502,7 +473,7 @@ function buildWalls(){
   //car.rotation.y = -Math.PI / 2;
   car2.position.set(125,2.5,-300)
   
-  scene.add(car2);
+  //scene.add(car2);
   
   
   level2Walls[16].mesh.rotation.y = -Math.PI / 2;
@@ -537,10 +508,10 @@ function buildWalls(){
   level2Walls[20].mesh.visible = false;
   
   
-  let x = new Wall(95,5, new THREE.Vector3(0, 0, -1));
+  let x = new Wall(200,5, new THREE.Vector3(0, 0, -1));
       x.update();
       level2Walls.push(x);
-  level2Walls[23].mesh.position.set(22.5, 2.5, -325)
+  level2Walls[23].mesh.position.set(75, 2.5, -325)
   
   
   x = new Wall(150,5, new THREE.Vector3(0, 0, -1));
@@ -549,139 +520,19 @@ function buildWalls(){
   level2Walls[24].mesh.rotation.y = -Math.PI / 2;
   level2Walls[24].mesh.position.set(25, 2.5, -200)
   
-  for (var i = 0; i < 3; i++) {
-      let x = new Wall(42.5,5, new THREE.Vector3(0, 0, -1));
-      x.update();
-      level2Walls.push(x);
-  }
+  x = new Wall(150,5, new THREE.Vector3(0, 0, -1));
+  x.update();
+  level2Walls.push(x);
   level2Walls[25].mesh.position.set(100, 2.5, -275)
-  level2Walls[26].mesh.position.set(47.5, 2.5, -275)
-  level2Walls[27].mesh.position.set(152.5, 2.5, -275)
   
-  
-  for (var i = 0; i < 2; i++) {
-      let x = new Wall(42.5,5, new THREE.Vector3(0, 0, -1));
-      x.update();
-      level2Walls.push(x);
-  }
-  level2Walls[28].mesh.position.set(100, 2.5, -325)
-  level2Walls[29].mesh.position.set(152.5, 2.5, -325)
+
   class2.add(obstacle1.clone(),obstacle2.clone(),obstacle3.clone(),car.clone(),car2.clone())
   for (var i = 0; i <= 9; i++)
 	class2.add(level2Walls[i].mesh.clone());
 
   //class 3
   
-  for(var i=0;i<8;i++)
-   {
-	 if (i < 4) {
-      let x = new Wall(50,5, new THREE.Vector3(0, 0, -1));
-      x.update();
-      level3Walls.push(x);
-    }
-     else if(i>=4&&i<6)
-     {
-       let x = new Wall(100,5, new THREE.Vector3(0, 0, -1));
-      x.update();
-      level3Walls.push(x);
-     }
-     else{
-       let x = new Wall(150,5, new THREE.Vector3(0, 0, -1));
-      x.update();
-      level3Walls.push(x);
-	 }		 
-   }
-   level3Walls[0].mesh.rotation.y = -Math.PI / 2;
-   level3Walls[1].mesh.rotation.y = -Math.PI / 2;
-   level3Walls[6].mesh.rotation.z = -Math.PI / 2/3;
-   level3Walls[7].mesh.rotation.z = -Math.PI / 2/3;
-   
-   level3Walls[0].mesh.position.set(225, 82.5, -300);
-   level3Walls[1].mesh.position.set(504.8,7.5,-300);
-   level3Walls[2].mesh.position.set(250,82.5,-325);
-   level3Walls[3].mesh.position.set(250.8,82.5,-275);
-   level3Walls[4].mesh.position.set(454.8,7.5,-325);
-   level3Walls[5].mesh.position.set(454.8,7.5,-275);
-   level3Walls[6].mesh.position.set(339.8,45,-325);
-   level3Walls[7].mesh.position.set(339.8,45,-275);
-   
-   
-   level3Walls[0].mesh.visible = false;
-   
-    for(var i=0;i<6;i++)
-   {
-	 if (i < 2) {
-      let x = new Wall(30,5, new THREE.Vector3(0, 0, -1));
-      x.update();
-      level3Walls.push(x);
-    }
-	else
-	{
-	  let x = new Wall(2.5,5,new THREE.Vector3(0,0,1),1);
-	  x.update();
-	  level3Walls.push(x)
-	}
-   }
-   level3Walls[8].mesh.position.set(0, 3, 0)
-   level3Walls[9].mesh.position.set(0, 3, 0)    
-   level3Walls[10].mesh.position.set(-15, 3, 0)
-   level3Walls[10].mesh.rotation.y = -Math.PI / 2;
-   level3Walls[11].mesh.position.set(-15, 3, 0)
-   level3Walls[11].mesh.rotation.y = -Math.PI / 2;
-   level3Walls[12].mesh.position.set(15, 3, 0)
-   level3Walls[12].mesh.rotation.y = Math.PI / 2;
-   level3Walls[13].mesh.position.set(15, 3, 0)
-   level3Walls[13].mesh.rotation.y = Math.PI / 2;
-   
-  var separator1=new THREE.Group();
-  var separator2=new THREE.Group();
-  
-  separator1.add(level3Walls[8].mesh,level3Walls[10].mesh,level3Walls[12].mesh); 
-  scene.add(separator1);
-  separator2.add(level3Walls[9].mesh,level3Walls[11].mesh,level3Walls[13].mesh); 
-  scene.add(separator2);
-  
-  
-  separator1.position.set(390,12.5,-290)
-  separator1.rotation.z=-Math.PI/2/3;
-  separator2.position.set(390,12.5,-310)
-  separator2.rotation.z=-Math.PI/2/3;
-  
-  for(var i=0;i<4;i++)
-   {
-	 if (i < 2) {
-      let x = new Wall(15,5, new THREE.Vector3(0, 0, -1));
-      x.update();
-      level3Walls.push(x);
-    }
-	else
-	{
-	  let x = new Wall(2.5,5,new THREE.Vector3(0,0,1),1);
-	  x.update();
-	  level3Walls.push(x)
-	}
-   }
-   level3Walls[14].mesh.position.set(0, 3, 0)
-   level3Walls[15].mesh.position.set(0, 3, 0)    
-   level3Walls[16].mesh.position.set(-7.5, 3, 0)
-   level3Walls[16].mesh.rotation.y = -Math.PI / 2;
-   level3Walls[17].mesh.position.set(7.5, 3, 0)
-   level3Walls[17].mesh.rotation.y = Math.PI / 2;
-   
-   var separator3=new THREE.Group();
-    separator3.add(level3Walls[14].mesh,level3Walls[16].mesh); 
-    scene.add(separator3);
-	separator3.position.set(430,4,-283)
-	separator3.rotation.y=-Math.PI/2;
-	
-    var separator4=new THREE.Group();
-    separator4.add(level3Walls[15].mesh,level3Walls[17].mesh); 
-    scene.add(separator4);
-	separator4.position.set(430,4,-317)
-	separator4.rotation.y=-Math.PI/2;
-	for(var i = 0; i <= 7; i++)
-	  class3.add(level3Walls[i].mesh.clone());
-	class3.add(separator1.clone(),separator2.clone(),separator3.clone(),separator4.clone())
+
   
 /*
   const shape = new THREE.Shape();
@@ -728,6 +579,41 @@ function buildWalls(){
 
 	scene.add( lineMesh,lineMesh2,lineMesh3,lineMesh4); 
 */
+}
+function buildClass3Wall(){
+	let class3wall = [];
+	
+	for(var i=0;i<3;i++)
+   {
+      let x = new Wall(100,5, new THREE.Vector3(0, 0, -1));
+      x.update();
+      class3wall.push(x);
+   }
+   class3wall[0].mesh.rotation.y = -Math.PI / 2;
+   
+   class3wall[0].mesh.position.set(225, 82.5, -275);
+   class3wall[1].mesh.position.set(275,82.5,-325);
+   class3wall[2].mesh.position.set(275,82.5,-225);
+   
+   for(var i=0;i<6;i++)
+   {
+      let x = new Wall(200,5, new THREE.Vector3(0, 0, -1));
+      x.update();
+      class3wall.push(x);
+   }
+   
+   class3wall[3].mesh.position.set(425, 82.5, -250);
+   class3wall[4].mesh.position.set(425,82.5,-300);
+   class3wall[5].mesh.position.set(425, 42.5, -250);
+   class3wall[6].mesh.position.set(425,42.5,-200);
+   class3wall[7].mesh.position.set(425, 42.5, -300);
+   class3wall[8].mesh.position.set(425,42.5,-350);
+   
+	for(var i = 0; i <=8; i++)
+	  class3.add(class3wall[i].mesh.clone());
+  
+   return class3wall;
+	
 }
 function buildholes(){
 	
@@ -889,43 +775,7 @@ function buildholes(){
 	class2.add(ballhole2.clone())
 	//class3
 
-	let mesh3 = new THREE.Mesh(geometry2, material);
-	scene.add(mesh3);
-	mesh3.meshFunc = meshFunc2;
-    mesh3.inMeshFunc = inMeshFunc2;
-    mesh3.meshDifFunc = meshDifFunc2;
-    mesh3.rotation.x = -Math.PI/2
-    mesh3.position.set(491.05,-4.795,-288.45);
-    mesh3.ID = "hole";
-	mesh3.level = 3;
-	mesh3.visible = false
-	holes.push(mesh3)
 	
- 	var ballhole3 = new THREE.Group();
-
-	var cylinder3 = new THREE.Mesh( geometry4, material );
-	cylinder3.castShadow = true;
-	cylinder3.receiveShadow = true;
-	cylinder3.position.y = -2.2;
-	cylinder3.ID = "wall";
-	cylinder3.r = 2.576;
-	cylinder3.height = 4.4;
-	holes.push(cylinder3);
-	
-	ballhole3.add(cylinder3);
-	
-	const block3 = new THREE.Mesh( geometry, material2);
-	
-	block3.position.y=-4.4;
-	block3.ID = "bottom";
-	block3.r = 2.576
-	block3.normal = new THREE.Vector3(0,1,0);
-	holes.push(block3)
-	ballhole3.add(block3)
-	scene.add(ballhole3);
-	ballhole3.position.set(491.05,5,-288.45);  	
-	
-	class3.add(ballhole3.clone())
 	
 }
 function buildPillar(){
@@ -1146,81 +996,7 @@ function buildPillar(){
 	scene.add(pillarC26)
 	cylinders.push(pillarC26)
 	
-	
-	var pillarC27 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC27.R = 2;
-	pillarC27.height = 6
-	pillarC27.position.set(130,3,-275);
-	pillarC27.ID = "wall"
-	pillarC27.castShadow = true;
-	scene.add(pillarC27)
-	cylinders.push(pillarC27)
-	
-	var pillarC28 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC28.R = 2;
-	pillarC28.height = 6
-	pillarC28.position.set(120,3,-275);
-	pillarC28.ID = "wall"
-	pillarC28.castShadow = true;
-	scene.add(pillarC28)
-	cylinders.push(pillarC28)
-	
-	var pillarC29 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC29.R = 2;
-	pillarC29.height = 6
-	pillarC29.position.set(70,3,-275);
-	pillarC29.ID = "wall"
-	pillarC29.castShadow = true;
-	scene.add(pillarC29)
-	cylinders.push(pillarC29)
-	
-	var pillarC210 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC210.R = 2;
-	pillarC210.height = 6
-	pillarC210.position.set(80,3,-275);
-	pillarC210.ID = "wall"
-	pillarC210.castShadow = true;
-	scene.add(pillarC210)
-	cylinders.push(pillarC210)
-	
-	var pillarC211 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC211.R = 2;
-	pillarC211.height = 6
-	pillarC211.position.set(130,3,-325);
-	pillarC211.ID = "wall"
-	pillarC211.castShadow = true;
-	scene.add(pillarC211)
-	cylinders.push(pillarC211)
-	
-	var pillarC212 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC212.R = 2;
-	pillarC212.height = 6
-	pillarC212.position.set(120,3,-325);
-	pillarC212.ID = "wall"
-	pillarC212.castShadow = true;
-	scene.add(pillarC212)
-	cylinders.push(pillarC212)
-	
-	var pillarC213 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC213.R = 2;
-	pillarC213.height = 6
-	pillarC213.position.set(70,3,-325);
-	pillarC213.ID = "wall"
-	pillarC213.castShadow = true;
-	scene.add(pillarC213)
-	cylinders.push(pillarC213)
-	
-	var pillarC214 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC214.R = 2;
-	pillarC214.height = 6
-	pillarC214.position.set(80,3,-325);
-	pillarC214.ID = "wall"
-	pillarC214.castShadow = true;
-	scene.add(pillarC214)
-	cylinders.push(pillarC214)
-	
-	class2.add(pillarC21.clone(),pillarC22.clone(),pillarC23.clone(),pillarC24.clone(),pillarC25.clone(),pillarC26.clone(),pillarC27.clone())
-	class2.add(pillarC28.clone(),pillarC29.clone(),pillarC210.clone(),pillarC211.clone(),pillarC212.clone(),pillarC213.clone(),pillarC214.clone())
+	class2.add(pillarC21.clone(),pillarC22.clone(),pillarC23.clone(),pillarC24.clone(),pillarC25.clone(),pillarC26.clone())
 	///class 3
 	
 	var pillarC31 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
@@ -1235,7 +1011,7 @@ function buildPillar(){
 	var pillarC32 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
 	pillarC32.R = 2;
 	pillarC32.height = 6
-	pillarC32.position.set(225,83,-275);
+	pillarC32.position.set(225,83,-225);
 	pillarC32.ID = "wall"
 	pillarC32.castShadow = true;
 	scene.add(pillarC32)
@@ -1244,7 +1020,7 @@ function buildPillar(){
 	var pillarC33 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
 	pillarC33.R = 2;
 	pillarC33.height = 6
-	pillarC33.position.set(275,83,-325);
+	pillarC33.position.set(325,83,-325);
 	pillarC33.ID = "wall"
 	pillarC33.castShadow = true;
 	scene.add(pillarC33)
@@ -1253,100 +1029,15 @@ function buildPillar(){
 	var pillarC34 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
 	pillarC34.R = 2;
 	pillarC34.height = 6
-	pillarC34.position.set(275,83,-275);
+	pillarC34.position.set(325,83,-225);
 	pillarC34.ID = "wall"
 	pillarC34.castShadow = true;
 	scene.add(pillarC34)
 	cylinders.push(pillarC34)
 	
-	var pillarC35 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC35.R = 2;
-	pillarC35.height = 6
-	pillarC35.position.set(404.8,8,-275);
-	pillarC35.ID = "wall"
-	pillarC35.castShadow = true;
-	scene.add(pillarC35)
-	cylinders.push(pillarC35)
 	
-	var pillarC36 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC36.R = 2;
-	pillarC36.height = 6
-	pillarC36.position.set(404.8,8,-325);
-	pillarC36.ID = "wall"
-	pillarC36.castShadow = true;
-	scene.add(pillarC36)
-	cylinders.push(pillarC36)
-	
-	var pillarC37 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC37.R = 2;
-	pillarC37.height = 6
-	pillarC37.position.set(504.8,8,-275);
-	pillarC37.ID = "wall"
-	pillarC37.castShadow = true;
-	scene.add(pillarC37)
-	cylinders.push(pillarC37)
-	
-	var pillarC38 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC38.R = 2;
-	pillarC38.height = 6
-	pillarC38.position.set(504.8,8,-275);
-	pillarC38.ID = "wall"
-	pillarC38.castShadow = true;
-	scene.add(pillarC38)
-	cylinders.push(pillarC38)
-	
-	var pillarC39 = new THREE.Mesh(new THREE.CylinderGeometry(3,3,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC39.R = 3;
-	pillarC39.height = 6
-	pillarC39.position.set(310,63,-310);
-	pillarC39.rotation.z=-Math.PI/2/3;
-	pillarC39.ID = "wall"
-	pillarC39.castShadow = true;
-	scene.add(pillarC39)
-	cylinders.push(pillarC39)
-	
-	var pillarC310 = new THREE.Mesh(new THREE.CylinderGeometry(3,3,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC310.R = 3;
-	pillarC310.height = 6
-	pillarC310.position.set(310,63,-290);
-	pillarC310.rotation.z=-Math.PI/2/3;
-	pillarC310.ID = "wall"
-	pillarC310.castShadow = true;
-	scene.add(pillarC310)
-	cylinders.push(pillarC310)
-	
-	var pillarC311 = new THREE.Mesh(new THREE.CylinderGeometry(3,3,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC311.R = 3;
-	pillarC311.height = 6
-	pillarC311.position.set(330,51.5,-300);
-	pillarC311.rotation.z=-Math.PI/2/3;
-	pillarC311.ID = "wall"
-	pillarC311.castShadow = true;
-	scene.add(pillarC311)
-	cylinders.push(pillarC311)
-	
-	var pillarC312 = new THREE.Mesh(new THREE.CylinderGeometry(3,3,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC312.R = 3;
-	pillarC312.height = 6
-	pillarC312.position.set(330,51.5,-316);
-	pillarC312.rotation.z=-Math.PI/2/3;
-	pillarC312.ID = "wall"
-	pillarC312.castShadow = true;
-	scene.add(pillarC312)
-	cylinders.push(pillarC312)
-	
-	var pillarC313 = new THREE.Mesh(new THREE.CylinderGeometry(3,3,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC313.R = 3;
-	pillarC313.height = 6
-	pillarC313.position.set(330,51.5,-284);
-	pillarC313.rotation.z=-Math.PI/2/3;
-	pillarC313.ID = "wall"
-	pillarC313.castShadow = true;
-	scene.add(pillarC313)
-	cylinders.push(pillarC313)
 
-	class3.add(pillarC31.clone(),pillarC32.clone(),pillarC33.clone(),pillarC34.clone(),pillarC35.clone(),pillarC36.clone(),pillarC37.clone())
-	class3.add(pillarC38.clone(),pillarC39.clone(),pillarC310.clone(),pillarC311.clone(),pillarC312.clone(),pillarC313.clone())
+	class3.add(pillarC31.clone(),pillarC32.clone(),pillarC33.clone(),pillarC34.clone())
 }
 function buildfloors(){
 	
@@ -1471,12 +1162,12 @@ function buildfloors(){
 	
 
 	var geometry3 = new ParametricGeometry(function(u0, v0, pos) {
-		let x = 225 + 50 * u0;
-		let z = -325 + 50 * v0;
+		let x = 225 + 100 * u0;
+		let z = -325 + 100 * v0;
 		pos.set(x, heightFunc(x, z)+80, z);
 	}, 40, 40);
 	var convertUV3 = function(x,z){
-		return [(x - 225) / 50,(z + 325) / 50]
+		return [(x - 225) / 100,(z + 325) /100]
 	}
 	
   var textureTest3 = loader2.load('https://i.imgur.com/Gpeoj0a.png');  
@@ -1498,6 +1189,91 @@ function buildfloors(){
 	floors.push(floor4)
 	scene.add(floor4)
 	class3.add(floor4.clone())
+	
+	
+	var geometry4 = new ParametricGeometry(function(u0, v0, pos) {
+		let x = 325 + 200 * u0;
+		let z = -300 + 50 * v0;
+		pos.set(x, heightFunc(x, z)+80, z);
+	}, 40, 40);
+	var convertUV4 = function(x,z){
+		return [(x - 325) / 200,(z + 300) /50]
+	}
+	
+	let floor6 = createMultiMaterialObject(geometry4, [materialGround, materialLight3]);
+    floor6.y = 80;
+    floor6.receiveShadow = true;
+	floor6.heightFunc = heightFunc;
+	floor6.inHeightFunc = inHeightFunc;
+	floor6.convertUV = convertUV4;
+
+	floors.push(floor6)
+	scene.add(floor6)
+	class3.add(floor6.clone())
+	
+	var geometry5 = new ParametricGeometry(function(u0, v0, pos) {
+		let x = 325 + 200 * u0;
+		let z = -250 + 50 * v0;
+		pos.set(x, heightFunc(x, z)+40, z);
+	}, 40, 40);
+	var convertUV5 = function(x,z){
+		return [(x - 325) / 200,(z + 250) /50]
+	}
+	
+	let floor7 = createMultiMaterialObject(geometry5, [materialGround, materialLight3]);
+    floor7.y = 40;
+    floor7.receiveShadow = true;
+	floor7.heightFunc = heightFunc;
+	floor7.inHeightFunc = inHeightFunc;
+	floor7.convertUV = convertUV5;
+
+	floors.push(floor7)
+	scene.add(floor7)
+	class3.add(floor7.clone())
+	
+	
+	var geometry6 = new ParametricGeometry(function(u0, v0, pos) {
+		let x = 325 + 200 * u0;
+		let z = -350 + 50 * v0;
+		pos.set(x, heightFunc(x, z)+40, z);
+	}, 40, 40);
+	var convertUV6 = function(x,z){
+		return [(x - 325) / 200,(z + 350) /50]
+	}
+	
+	let floor8 = createMultiMaterialObject(geometry6, [materialGround, materialLight3]);
+    floor8.y = 40;
+    floor8.receiveShadow = true;
+	floor8.heightFunc = heightFunc;
+	floor8.inHeightFunc = inHeightFunc;
+	floor8.convertUV = convertUV6;
+
+	floors.push(floor8)
+	scene.add(floor8)
+	class3.add(floor8.clone())
+	
+	var geometry7 = new ParametricGeometry(function(u0,v0,pos){
+		let theta = u0*Math.PI*2;
+		let r=v0*150;
+		let x=0+r*Math.cos(theta);
+		let z=250+r*Math.sin(theta);
+		pos.set(x,heightFunc(x,z)+1,z);
+	},40,40);
+	
+		
+	var convertUV7 = function(x,z){
+    let x2=x*x;
+	let z2=z*z;
+	let r =Math.sqrt(z2+x2);
+    let u =Math.acos(x/r)/2/Math.PI;
+	let v=r/150;
+	return [u,v];
+    }
+	
+	let floor9 = new THREE.Mesh(geometry7,materialGround);
+	scene.add(floor9);
+	floor9.y=1;
+	
 	
 }
 function buildArcWalls(){
@@ -1529,7 +1305,614 @@ function buildArcWalls(){
 	
 	
 }
+function buildGoal(){
+	let loader = new THREE.TextureLoader();
+  loader.crossOrigin = '';
+  let texture = loader.load('https://i.imgur.com/Ze2KEuN.png');
+  let texture2 = loader.load('https://i.imgur.com/Ze2KEuN.png');
+  texture2.repeat.set(1,4/8)
+
+  var texMat = new THREE.MeshBasicMaterial({
+    map: texture,
+    //transparent: true,
+    alphaTest: 0.5,
+    side:THREE.DoubleSide
+  });
+  var texMat2 = new THREE.MeshBasicMaterial({
+    map: texture2,
+    //transparent: true,
+    alphaTest: 0.5,
+    side:THREE.DoubleSide
+  });
+  var net = new THREE.Mesh(new THREE.PlaneGeometry(60, 55), texMat);
+  net.position.set(0,0,-30)
+  net.rotation.x=Math.PI/8;
+  var net2 = new THREE.Mesh(new THREE.PlaneGeometry(60, 20), texMat2);
+  net2.position.set(0,25,-10)
+  net2.rotation.x=Math.PI/2;
+  var pole=new THREE.Mesh(new THREE.CylinderGeometry(2,2,50,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole.position.set(30,0,0);
+  var pole2=new THREE.Mesh(new THREE.CylinderGeometry(2,2,50,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole2.position.set(-30,0,0);
+  var pole3=new THREE.Mesh(new THREE.CylinderGeometry(2,2,60,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole3.rotation.z=Math.PI/2;
+  pole3.position.set(0,25,0);
+  var pole4=new THREE.Mesh(new THREE.CylinderGeometry(2,2,60,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole4.rotation.z=Math.PI/2;
+  pole4.position.set(0,25,-20);
+  var pole5=new THREE.Mesh(new THREE.CylinderGeometry(2,2,20,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole5.rotation.x=Math.PI/2;
+  pole5.position.set(30,25,-10);
+  var pole6=new THREE.Mesh(new THREE.CylinderGeometry(2,2,20,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole6.rotation.x=Math.PI/2;
+  pole6.position.set(-30,25,-10);
+  var pole7=new THREE.Mesh(new THREE.CylinderGeometry(2,2,55,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole7.position.set(30,0,-30);
+  pole7.rotation.x=Math.PI/8
+  var pole8=new THREE.Mesh(new THREE.CylinderGeometry(2,2,55,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole8.position.set(-30,0,-30);
+  pole8.rotation.x=Math.PI/8
+  
+  var uvs = new Float32Array( quad_uvs);
+  var geometry = new THREE.BufferGeometry();
+
+  var indices = [];
+  var vertices = [];
+  
+  vertices.push(0,0,0, 20,0,0, 40,-50,0, 0,-50,0);
+  indices.push(3, 0, 1, 1, 2, 3);
+  
+	geometry.setIndex(indices);
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+  geometry.setAttribute( 'uv', new THREE.BufferAttribute( uvs, 2 ) );
+  geometry.computeVertexNormals();
+  let material = new THREE.MeshBasicMaterial({
+    map: texture,
+    alphaTest: 0.5,
+    side:THREE.DoubleSide
+  });
+	let pointer = new THREE.Mesh(geometry,material);
+  pointer.rotation.y=Math.PI/2;
+  pointer.position.set(30,25,0)
+  let pointer2 = new THREE.Mesh(geometry,material);
+  pointer2.rotation.y=Math.PI/2;
+  pointer2.position.set(-30,25,0)
+  var goal=new THREE.Group();
+  goal.add(pointer2,pointer,pole,pole2,pole3,pole4,pole5,pole6,pole7,pole8,net,net2);
+  scene.add(goal);
+  goal.rotation.y=-Math.PI/2;
+  goal.position.set(140,22,-300)
+}
+function buildChess(){
+	let class3chess = [];
+	var R=10;
+  
+  var loader = new THREE.TextureLoader(); 
+  var textureTest1 = loader.load('https://i.imgur.com/Lae2wkX.jpg');  
+  let material1 = new THREE.MeshBasicMaterial({
+        map: textureTest1,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1.0
+  });
+  
+  var checkerboard = new THREE.Mesh(new THREE.PlaneGeometry(210,210),material1);
+  checkerboard.position.set(0,1.1,250);
+  scene.add(checkerboard);
+  checkerboard.rotation.x=Math.PI/2;
+  
+  let material2 = new THREE.MeshBasicMaterial({
+	    color:'white',
+		side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1.0
+  });
+    var loader2 = new THREE.TextureLoader(); 
+    var redgeneraltexture = loader2.load('https://i.imgur.com/aO31H9z.png');
+    let materialredgeneral = new THREE.MeshBasicMaterial({
+        map: redgeneraltexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1.0
+	})
+	
+	var loader3 = new THREE.TextureLoader(); 
+    var redcartexture = loader3.load('https://i.imgur.com/HCeXYAT.png');
+    let materialredcar = new THREE.MeshBasicMaterial({
+        map: redcartexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1.0
+	})
+	
+	var loader4 = new THREE.TextureLoader(); 
+    var redelephanttexture = loader4.load('https://i.imgur.com/KC4RZtT.png');
+    let materialredelephant = new THREE.MeshBasicMaterial({
+        map: redelephanttexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1.0
+	})
+	
+	var loader5 = new THREE.TextureLoader(); 
+    var redadvisortexture = loader5.load('https://i.imgur.com/lwoFpHE.png');
+    let materialredadvisor = new THREE.MeshBasicMaterial({
+        map: redadvisortexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1.0
+	})
+	
+	var loader6 = new THREE.TextureLoader(); 
+    var redcannontexture = loader6.load('https://i.imgur.com/nJ9TJVR.png');
+    let materialredcannon = new THREE.MeshBasicMaterial({
+        map: redcannontexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1.0
+	})
+	
+	var loader7 = new THREE.TextureLoader(); 
+    var redhorsetexture = loader7.load('https://i.imgur.com/6weigeS.png');
+    let materialredhorse = new THREE.MeshBasicMaterial({
+        map: redhorsetexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1.0
+	})
+	
+	var loader8 = new THREE.TextureLoader(); 
+    var redsoldiertexture = loader8.load('https://i.imgur.com/sf23hO7.png');
+    let materialredsoldier = new THREE.MeshBasicMaterial({
+        map: redsoldiertexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1.0
+	})
+	
+	var loader9 = new THREE.TextureLoader(); 
+    var blackgeneraltexture = loader9.load('https://i.imgur.com/JYQ2LmP.png');
+    let materialblackgeneral = new THREE.MeshBasicMaterial({
+        map: blackgeneraltexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1.0
+	})
+	
+	var loader10 = new THREE.TextureLoader(); 
+    var blackcartexture = loader10.load('https://i.imgur.com/wMO7i5j.png');
+    let materialblackcar = new THREE.MeshBasicMaterial({
+        map: blackcartexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1.0
+	})
+	
+	var loader11 = new THREE.TextureLoader(); 
+    var blackhorsetexture = loader11.load('https://i.imgur.com/Hnjciy6.png');
+    let materialblackhorse = new THREE.MeshBasicMaterial({
+        map: blackhorsetexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1.0
+	})
+	
+	var loader12 = new THREE.TextureLoader(); 
+    var blackelephanttexture = loader12.load('https://i.imgur.com/IMYXLzC.png');
+    let materialblackelephant = new THREE.MeshBasicMaterial({
+        map: blackelephanttexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1.0
+	})
+	
+	var loader13 = new THREE.TextureLoader(); 
+    var blackcannontexture = loader13.load('https://i.imgur.com/m2G0nWr.png');
+    let materialblackcannon = new THREE.MeshBasicMaterial({
+        map: blackcannontexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1.0
+	})
+	
+	var loader14 = new THREE.TextureLoader(); 
+    var blacksoldiertexture = loader14.load('https://i.imgur.com/yuk9Zo1.png');
+    let materialblacksoldier = new THREE.MeshBasicMaterial({
+        map: blacksoldiertexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1.0
+	})
+	
+	var loader15 = new THREE.TextureLoader(); 
+    var blackadvisortexture = loader15.load('https://i.imgur.com/vmlMtI5.png');
+    let materialblackadvisor = new THREE.MeshBasicMaterial({
+        map: blackadvisortexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1.0
+	})
+  
+  var redcar1G = new THREE.Group();
+  let redcar1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let redcar1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredcar);
+  redcar1skin.position.set(0,2.6,0);
+  redcar1skin.rotation.x=-Math.PI/2;
+  redcar1.R=R;
+  redcar1.height=5;
+  redcar1.ID="wall";
+  redcar1G.add(redcar1,redcar1skin);
+  class3chess.push(redcar1G);
+  class3chess[0].position.set(-98,3.6,347);
+  
+  var redelephant1G = new THREE.Group();
+  let redelephant1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let redelephant1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredelephant);
+  redelephant1skin.position.set(0,2.6,0);
+  redelephant1skin.rotation.x=-Math.PI/2;
+  redelephant1.R=R;
+  redelephant1.height=5;
+  redelephant1.ID="wall";
+  redelephant1G.add(redelephant1,redelephant1skin);
+  class3chess.push(redelephant1G);
+  class3chess[1].position.set(-48,3.6,347);
+  
+  var redadvisor1G = new THREE.Group();
+  let redadvisor1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let redadvisor1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredadvisor);
+  redadvisor1skin.position.set(0,2.6,0);
+  redadvisor1skin.rotation.x=-Math.PI/2;
+  redadvisor1.R=R;
+  redadvisor1.height=5;
+  redadvisor1.ID="wall";
+  redadvisor1G.add(redadvisor1,redadvisor1skin);
+  class3chess.push(redadvisor1G);
+  class3chess[2].position.set(-23,3.6,347);
+  
+  var redgeneralG = new THREE.Group();
+  let redgeneral =new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let redgeneralskin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredgeneral);
+  redgeneralskin.position.set(0,2.6,0);
+  redgeneralskin.rotation.x=-Math.PI/2;
+  redgeneral.R=R;
+  redgeneral.height=5;
+  redgeneral.ID="wall";
+  redgeneralG.add(redgeneral,redgeneralskin);
+  class3chess.push(redgeneralG);
+  class3chess[3].position.set(2,3.6,347);
+  
+  
+  
+  var redadvisor2G = new THREE.Group();
+  let redadvisor2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let redadvisor2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredadvisor);
+  redadvisor2skin.position.set(0,2.6,0);
+  redadvisor2skin.rotation.x=-Math.PI/2;
+  redadvisor2.R=R;
+  redadvisor2.height=5;
+  redadvisor2.ID="wall";
+  redadvisor2G.add(redadvisor2,redadvisor2skin);
+  class3chess.push(redadvisor2G);
+  class3chess[4].position.set(27,3.6,347);
+  
+  var redcar2G = new THREE.Group();
+  let redcar2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let redcar2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredcar);
+  redcar2skin.position.set(0,2.6,0);
+  redcar2skin.rotation.x=-Math.PI/2;
+  redcar2.R=R;
+  redcar2.height=5;
+  redcar2.ID="wall";
+  redcar2G.add(redcar2,redcar2skin);
+  class3chess.push(redcar2G);
+  class3chess[5].position.set(77,3.6,347);
+  
+  var redcannon1G = new THREE.Group();
+  let redcannon1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let redcannon1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredcannon);
+  redcannon1skin.position.set(0,2.6,0);
+  redcannon1skin.rotation.x=-Math.PI/2;
+  redcannon1.R=R;
+  redcannon1.height=5;
+  redcannon1.ID="wall";
+  redcannon1G.add(redcannon1,redcannon1skin);
+  class3chess.push(redcannon1G);
+  class3chess[6].position.set(-23,3.6,305);
+  
+  var redelephant2G = new THREE.Group();
+  let redelephant2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let redelephant2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredelephant);
+  redelephant2skin.position.set(0,2.6,0);
+  redelephant2skin.rotation.x=-Math.PI/2;
+  redelephant2.R=R;
+  redelephant2.height=5;
+  redelephant2.ID="wall";
+  redelephant2G.add(redelephant2,redelephant2skin);
+  class3chess.push(redelephant2G);
+  class3chess[7].position.set(2,3.6,305);
+  
+  var redhorse1G = new THREE.Group();
+  let redhorse1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let redhorse1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredhorse);
+  redhorse1skin.position.set(0,2.6,0);
+  redhorse1skin.rotation.x=-Math.PI/2;
+  redhorse1.R=R;
+  redhorse1.height=5;
+  redhorse1.ID="wall";
+  redhorse1G.add(redhorse1,redhorse1skin);
+  class3chess.push(redhorse1G);
+  class3chess[8].position.set(52,3.6,305);
+  
+  var redsoldier1G = new THREE.Group();
+  let redsoldier1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let redsoldier1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredsoldier);
+  redsoldier1skin.position.set(0,2.6,0);
+  redsoldier1skin.rotation.x=-Math.PI/2;
+  redsoldier1.R=R;
+  redsoldier1.height=5;
+  redsoldier1.ID="wall";
+  redsoldier1G.add(redsoldier1,redsoldier1skin);
+  class3chess.push(redsoldier1G);
+  class3chess[9].position.set(-98,3.6,282);
+  
+  var redsoldier2G = new THREE.Group();
+  let redsoldier2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let redsoldier2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredsoldier);
+  redsoldier2skin.position.set(0,2.6,0);
+  redsoldier2skin.rotation.x=-Math.PI/2;
+  redsoldier2.R=R;
+  redsoldier2.height=5;
+  redsoldier2.ID="wall";
+  redsoldier2G.add(redsoldier2,redsoldier2skin);
+  class3chess.push(redsoldier2G);
+  class3chess[10].position.set(2,3.6,282);
+  
+  var redsoldier3G = new THREE.Group();
+  let redsoldier3 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let redsoldier3skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredsoldier);
+  redsoldier3skin.position.set(0,2.6,0);
+  redsoldier3skin.rotation.x=-Math.PI/2;
+  redsoldier3.R=R;
+  redsoldier3.height=5;
+  redsoldier3.ID="wall";
+  redsoldier3G.add(redsoldier3,redsoldier3skin);
+  class3chess.push(redsoldier3G);
+  class3chess[11].position.set(52,3.6,282);
+  
+  var redsoldier4G = new THREE.Group();
+  let redsoldier4 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let redsoldier4skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredsoldier);
+  redsoldier4skin.position.set(0,2.6,0);
+  redsoldier4skin.rotation.x=-Math.PI/2;
+  redsoldier4.R=R;
+  redsoldier4.height=5;
+  redsoldier4.ID="wall";
+  redsoldier4G.add(redsoldier4,redsoldier4skin);
+  class3chess.push(redsoldier4G);
+  class3chess[12].position.set(98,3.6,282);
+  
+  var redcannon2G = new THREE.Group();
+  let redcannon2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let redcannon2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredcannon);
+  redcannon2skin.position.set(0,2.6,0);
+  redcannon2skin.rotation.x=-Math.PI/2;
+  redcannon2.R=R;
+  redcannon2.height=5;
+  redcannon2.ID="wall";
+  redcannon2G.add(redcannon2,redcannon2skin);
+  class3chess.push(redcannon2G);
+  class3chess[13].position.set(-73,3.6,262);
+  
+  redhorse2G = new THREE.Group();
+  let redhorse2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let redhorse2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredhorse);
+  redhorse2skin.position.set(0,2.6,0);
+  redhorse2skin.rotation.x=-Math.PI/2;
+  redhorse2.R=R;
+  redhorse2.height=5;
+  redhorse2.ID="wall";
+  redhorse2G.add(redhorse2,redhorse2skin);
+  class3chess.push(redhorse2G);
+  class3chess[14].position.set(-23,3.6,262);
+  
+  var blackcar1G = new THREE.Group();
+  let blackcar1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let blackcar1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackcar);
+  blackcar1skin.position.set(0,2.6,0);
+  blackcar1skin.rotation.x=-Math.PI/2;
+  blackcar1.R=R;
+  blackcar1.height=5;
+  blackcar1.ID="wall";
+  blackcar1G.add(blackcar1,blackcar1skin);
+  class3chess.push(blackcar1G);
+  class3chess[15].position.set(-48,3.6,237);
+  
+  var blacksoldier1G = new THREE.Group();
+  let blacksoldier1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let blacksoldier1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblacksoldier);
+  blacksoldier1skin.position.set(0,2.6,0);
+  blacksoldier1skin.rotation.x=-Math.PI/2;
+  blacksoldier1.R=R;
+  blacksoldier1.height=5;
+  blacksoldier1.ID="wall";
+  blacksoldier1G.add(blacksoldier1,blacksoldier1skin);
+  class3chess.push(blacksoldier1G);
+  class3chess[16].position.set(52,3.6,237);
+  
+  var blacksoldier2G = new THREE.Group();
+  let blacksoldier2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let blacksoldier2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblacksoldier);
+  blacksoldier2skin.position.set(0,2.6,0);
+  blacksoldier2skin.rotation.x=-Math.PI/2;
+  blacksoldier2.R=R;
+  blacksoldier2.height=5;
+  blacksoldier2.ID="wall";
+  blacksoldier2G.add(blacksoldier2,blacksoldier2skin);
+  class3chess.push(blacksoldier2G);
+  class3chess[17].position.set(-98,3.6,217);
+  
+  var blacksoldier3G = new THREE.Group();
+  let blacksoldier3 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let blacksoldier3skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblacksoldier);
+  blacksoldier3skin.position.set(0,2.6,0);
+  blacksoldier3skin.rotation.x=-Math.PI/2;
+  blacksoldier3.R=R;
+  blacksoldier3.height=5;
+  blacksoldier3.ID="wall";
+  blacksoldier3G.add(blacksoldier3,blacksoldier3skin);
+  class3chess.push(blacksoldier3G);
+  class3chess[18].position.set(2,3.6,217);
+  
+  var blacksoldier4G = new THREE.Group();
+  let blacksoldier4 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let blacksoldier4skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblacksoldier);
+  blacksoldier4skin.position.set(0,2.6,0);
+  blacksoldier4skin.rotation.x=-Math.PI/2;
+  blacksoldier4.R=R;
+  blacksoldier4.height=5;
+  blacksoldier4.ID="wall";
+  blacksoldier4G.add(blacksoldier4,blacksoldier4skin);
+  class3chess.push(blacksoldier4G);
+  class3chess[19].position.set(98,3.6,217);
+  
+  var blackcannon1G = new THREE.Group();
+  let blackcannon1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let blackcannon1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackcannon);
+  blackcannon1skin.position.set(0,2.6,0);
+  blackcannon1skin.rotation.x=-Math.PI/2;
+  blackcannon1.R=R;
+  blackcannon1.height=5;
+  blackcannon1.ID="wall";
+  blackcannon1G.add(blackcannon1,blackcannon1skin);
+  class3chess.push(blackcannon1G);
+  class3chess[20].position.set(-23,3.6,217);
+  
+  var blackelephant1G = new THREE.Group();
+  let blackelephant1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let blackelephant1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackelephant);
+  blackelephant1skin.position.set(0,2.6,0);
+  blackelephant1skin.rotation.x=-Math.PI/2;
+  blackelephant1.R=R;
+  blackelephant1.height=5;
+  blackelephant1.ID="wall";
+  blackelephant1G.add(blackelephant1,blackelephant1skin);
+  class3chess.push(blackelephant1G);
+  class3chess[21].position.set(2,3.6,194);
+  
+  var blackhorse1G = new THREE.Group();
+  let blackhorse1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let blackhorse1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackhorse);
+  blackhorse1skin.position.set(0,2.6,0);
+  blackhorse1skin.rotation.x=-Math.PI/2;
+  blackhorse1.R=R;
+  blackhorse1.height=5;
+  blackhorse1.ID="wall";
+  blackhorse1G.add(blackhorse1,blackhorse1skin);
+  class3chess.push(blackhorse1G);
+  class3chess[22].position.set(52,3.6,194);
+  
+  var blackhorse2G = new THREE.Group();
+  let blackhorse2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let blackhorse2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackhorse);
+  blackhorse2skin.position.set(0,2.6,0);
+  blackhorse2skin.rotation.x=-Math.PI/2;
+  blackhorse2.R=R;
+  blackhorse2.height=5;
+  blackhorse2.ID="wall";
+  blackhorse2G.add(blackhorse2,blackhorse2skin);
+  class3chess.push(blackhorse2G);
+  class3chess[23].position.set(-23,3.6,171);
+  
+  var blackadvisor1G = new THREE.Group();
+  let blackadvisor1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let blackadvisor1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackadvisor);
+  blackadvisor1skin.position.set(0,2.6,0);
+  blackadvisor1skin.rotation.x=-Math.PI/2;
+  blackadvisor1.R=R;
+  blackadvisor1.height=5;
+  blackadvisor1.ID="wall";
+  blackadvisor1G.add(blackadvisor1,blackadvisor1skin);
+  class3chess.push(blackadvisor1G);
+  class3chess[24].position.set(-23,3.6,150);
+  
+  var blackgeneralG = new THREE.Group();
+  let blackgeneral = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let blackgeneralskin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackgeneral);
+  blackgeneralskin.position.set(0,2.6,0);
+  blackgeneralskin.rotation.x=-Math.PI/2;
+  blackgeneral.R=R;
+  blackgeneral.height=5;
+  blackgeneral.ID="wall";
+  blackgeneralG.add(blackgeneral,blackgeneralskin);
+  class3chess.push(blackgeneralG);
+  class3chess[25].position.set(2,3.6,150);
+  
+  var blackadvisor2G = new THREE.Group();
+  let blackadvisor2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let blackadvisor2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackadvisor);
+  blackadvisor2skin.position.set(0,2.6,0);
+  blackadvisor2skin.rotation.x=-Math.PI/2;
+  blackadvisor2.R=R;
+  blackadvisor2.height=5;
+  blackadvisor2.ID="wall";
+  blackadvisor2G.add(blackadvisor2,blackadvisor2skin);
+  class3chess.push(blackadvisor2G);
+  class3chess[26].position.set(27,3.6,150);
+  
+  var blackelephant2G = new THREE.Group();
+  let blackelephant2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let blackelephant2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackelephant);
+  blackelephant2skin.position.set(0,2.6,0);
+  blackelephant2skin.rotation.x=-Math.PI/2;
+  blackelephant2.R=R;
+  blackelephant2.height=5;
+  blackelephant2.ID="wall";
+  blackelephant2G.add(blackelephant2,blackelephant2skin);
+  class3chess.push(blackelephant2G);
+  class3chess[27].position.set(52,3.6,150);
+  
+  var blackcar2G = new THREE.Group();
+  let blackcar2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
+  let blackcar2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackcar);
+  blackcar2skin.position.set(0,2.6,0);
+  blackcar2skin.rotation.x=-Math.PI/2;
+  blackcar2.R=R;
+  blackcar2.height=5;
+  blackcar2.ID="wall";
+  blackcar2G.add(blackcar2,blackcar2skin);
+  class3chess.push(blackcar2G);
+  class3chess[28].position.set(77,3.6,150);
+  
+  var signtexture=loader2.load('https://i.imgur.com/LmuQAag.png')
+  var wood = new THREE.Mesh(new THREE.PlaneGeometry(40,20),new THREE.MeshBasicMaterial({
+        color: 0xD26900,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1
+  }));
+  var sign = new THREE.Mesh(new THREE.PlaneGeometry(40,20),new THREE.MeshBasicMaterial({
+        map: signtexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1
+  }));
+  sign.position.set(87,7,275);
+  wood.position.set(87.3,5,275);
+  sign.rotation.y=Math.PI/2;
+  wood.rotation.y=Math.PI/2;
+  scene.add(sign,wood);
+  
+  
+     for(var i = 0; i <=28; i++){
+	  scene.add(class3chess[i]);
+	  class3.add(class3chess[i].clone());
+	 }
+  
+  return class3chess;
+	
+}
 function setClassVisible(level){
+	
 		class1Rotate.visible = false;
 		class2Rotate.visible = false;
 		class3Rotate.visible = false;		
@@ -1541,6 +1924,6 @@ function setClassVisible(level){
 	else if(level === 3)
 		class3Rotate.visible = true;
 }
-export {buildTerrain,table1,table2,table3,planes,walls,cylinders,holes,floors,arcWalls}
+export {buildTerrain,table1,table2,planes,walls,cylinders,holes,floors,arcWalls}
 export {class1Rotate,class2Rotate,class3Rotate,setClassVisible}
-export {obstacle1,obstacle2,obstacle3,car,car2}
+export {obstacle1,obstacle2,obstacle3,car,car2,redhorse2G}
