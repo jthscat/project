@@ -20,9 +20,9 @@ class FinitePlane {
 }
 
 class Wall {
-  constructor(len,height, localN , type = 0, color = 0xA23400) {
+  constructor(len,height, localN , type = 0, color = 0xA23400,width = 2.5,COR = 0.64) {
 	if(type === 0)
-		var geometry = new THREE.BoxGeometry(len, height, 2.5);
+		var geometry = new THREE.BoxGeometry(len, height, width);
 	else if(type === 1){
 		var geometry = new THREE.PlaneGeometry(len,height)
 	}
@@ -31,7 +31,8 @@ class Wall {
       color: color,
       shininess: 200,
       transparent: true,
-      opacity: 1
+      opacity: 1,
+	  side:THREE.DoubleSide,
     })
     var mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
@@ -39,9 +40,11 @@ class Wall {
 	mesh.castShadow = true;
 	mesh.receiveShadow = true;
 	this.height = height / 2;
+	this.width = width;
     this.len = len
     this.localN = localN.clone();
 	this.type = type;
+	this.COR = COR;
   }
   update() {
     this.mesh.updateMatrixWorld();

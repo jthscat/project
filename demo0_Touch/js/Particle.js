@@ -33,6 +33,10 @@ class Particle {
 	this.choose = true;
 	this.useG = true;
     scene.add(this.mesh);
+	
+	let box = new THREE.Mesh(new THREE.BoxGeometry(12,6,6))
+	box.position.set(392,3,8-300)
+	//scene.add(box)
 
   }
   update() {
@@ -63,8 +67,10 @@ class Particle {
     this.pos.add(this.vel.clone().multiplyScalar(dtt));
 
 	  this.checkHole(holes)
+	  //this.checkarea(86 + 300,5 -300,98 + 300,11 - 300)
+	  this.checkarea();
 		if(this.inHole != true){
-
+			
 			this.collidingPlane(planes);
 			
 			this.checkFloor(floors)
@@ -230,48 +236,67 @@ class Particle {
 
   }
   checkCylinder(cylinders){
-        var count = 0;
-        var COR = 0.64;
-        for(var i = 0; i < cylinders.length; i++){
-            let cylinder = cylinders[i];
-            var cylinderPos = new THREE.Vector3()
-            cylinderPos.copy(new THREE.Vector3(0,cylinder.worldToLocal(this.pos.clone()).y,0))
-            var ballPos = new THREE.Vector3()
-            ballPos.copy(cylinder.worldToLocal(this.pos.clone()))
-
-            if(ballPos.sub(cylinderPos).length() <= this.r + cylinder.R && Math.abs(cylinderPos.length()) <= cylinder.height / 2){
-				if(this.ID === "player"){
-					this.play(hitSoundBuffer)//playSound2(soundSource.hit) // this.hitSound.play()
-				}
-                count++;
-                ballPos.normalize()
-                var temp = new THREE.Vector3();
-                temp.copy(cylinderPos.clone().add(ballPos.clone().multiplyScalar(this.r + cylinder.R)))
-                this.pos.copy(cylinder.localToWorld(temp))
-                this.n.copy(cylinder.localToWorld(ballPos).sub(cylinder.position).normalize());
-                if (this.nowIsFlyC && this.nowIsFlyP && this.nowIsFlyCy || cylinder.ID === "wall") {
-                        var tempV = new THREE.Vector3(0, 0, 0)
-            tempV.copy(this.vel.clone().projectOnVector(this.n).negate())
-            this.vel.sub(this.n.clone().multiplyScalar(this.vel.dot(this.n)));
-            this.vel.add(tempV.multiplyScalar(COR))
-          } else {
-            this.vel.sub(this.n.clone().multiplyScalar(this.vel.dot(this.n)));
-          }
-                 this.nowIsFlyCy = false;
+    var count = 0;
+    var COR = 0.64;
+    for(var i = 0; i < cylinders.length; i++){
+        let cylinder = cylinders[i];
+        var cylinderPos = new THREE.Vector3()
+        cylinderPos.copy(new THREE.Vector3(cylinder.position.x,this.pos.y,cylinder.position.z))
+		let temp;
+		if(i < 6){
+			cylinderPos.add(cylinders.class1Pos)
+			temp = cylinders.y1;
+		}
+		if(i >= 6 && i < 20){
+			cylinderPos.add(cylinders.class2Pos)
+			temp = cylinders.y2;
+		}
+		if(i >= 20 && i < 26){
+			cylinderPos.add(cylinders.class3Pos)
+			temp = cylinders.y31
+		}
+		if(i >= 26 && i < 55){
+			cylinderPos.add(cylinders.class3Pos)
+			temp = cylinders.y32			
+		}
+		temp += cylinder.position.y;
+			
+		
+        var ballPos = new THREE.Vector3()
+        ballPos.copy(this.pos)
+        if(ballPos.sub(cylinderPos).length() <= this.r + cylinder.R && this.pos.y <= temp +  cylinder.height/2 + this.r && this.pos.y >= temp - cylinder.height / 2 - this.r){
+			if(this.ID === "player"){
+				this.play(hitSoundBuffer)//playSound2(soundSource.hit) // this.hitSound.play()
+			}
+            count++;
+            ballPos.normalize()
+            this.pos.copy(cylinderPos.add(ballPos.clone().multiplyScalar(this.r + cylinder.R)))
+				
+				
+            this.n.copy(ballPos);
+				
+            if(this.nowIsFlyC && this.nowIsFlyP && this.nowIsFlyCy || cylinder.ID === "wall") {
+				this.vel.sub(this.n.clone().multiplyScalar((1 + COR) * this.vel.dot(this.n)));
+			}
+			else {
+				this.vel.sub(this.n.clone().multiplyScalar((1 + COR) * this.vel.dot(this.n)));
+					//this.vel.sub(this.n.clone().multiplyScalar(this.vel.dot(this.n)));
+			}
+            this.nowIsFlyCy = false;
             }
         }
-         if (count === 0) {
-      this.nowIsFlyCy = true;
-    }
-    }
+        if (count === 0) {
+			this.nowIsFlyCy = true;
+		}
+    }	
   checkWall(allWalls) {
-    const COR = 0.64;
     for (var k = 0; k < allWalls.length; k++) {
 		let walls = allWalls[k]
 		for(var i = 0; i < walls.length; i++){
-			if(this.ID === "predict" && i > 15 && i < 36)
+			if(this.ID === "predict" && k === 1 && i >= 0 && i <= 19)
 				continue;
 		  let wall = walls[i]
+		  const COR = wall.COR;
 		  let temp = new THREE.Vector3(0, 0, 0);
 		  temp.copy(wall.mesh.worldToLocal(this.pos.clone()))
 		  var times = 3;
@@ -307,17 +332,37 @@ class Particle {
 				this.pos.copy(wall.mesh.localToWorld(new THREE.Vector3(temp.x,temp.y,this.r)));
 				this.vel.sub(this.n.clone().multiplyScalar((1 + COR) * this.vel.dot(this.n)))
 			  }  
-			  
 		  }
+		  /*
+		  if(wall.type === 2){
+			   if (temp.y <= wall.height + this.r  && temp.y >= -wall.height * 2 - this.r  && Math.abs(temp.x) <= wall.len/2 && Math.abs(temp.z) <= wall.width/2){
+				if(this.ID === "player"){
+					this.play(hitSoundBuffer)//playSound2(soundSource.hit) // this.hitSound.play()
+				}
+				this.n.copy(wall.normal);
+				
+				if(temp.z < 0)
+					this.pos.copy(wall.mesh.localToWorld(new THREE.Vector3(temp.x,temp.y + this.r,temp.z)));
+				else
+					this.pos.copy(wall.mesh.localToWorld(new THREE.Vector3(temp.x,temp.y + this.r,temp.z)));
+				
+				this.vel.sub(this.n.clone().multiplyScalar((1 + COR) * this.vel.dot(this.n)))
+			  }
+		  }
+		  */		  
 		}
     }
 
   }
   checkFloor(floors){
-	const COR = 0.61;
+	var COR;
     var count = 0;
     for (var i = 0; i < floors.length; i++) {
 		let floor = floors[i]
+		if(floor.COR !== undefined)
+			COR = floor.COR;
+		else
+			COR = 0.64;
 		let UV = floor.convertUV(floor.worldToLocal(this.pos.clone()).x,floor.worldToLocal(this.pos.clone()).z)
 		let y = floor.heightFunc(this.pos.x, this.pos.z);
 		let height = new THREE.Vector3();
@@ -350,25 +395,42 @@ class Particle {
 			//console.log(arcWalls[i])
 		  let arcWall = arcWalls[i].children[0]
 		  let arcWallPos = new THREE.Vector3(0, 0, 0);
-		  arcWallPos.copy(new THREE.Vector3(0,arcWall.worldToLocal(this.pos.clone()).y,0))
 		  let ballPos = new THREE.Vector3()
           ballPos.copy(arcWall.worldToLocal(this.pos.clone()))
+          ballPos.y = 0;
 		  
 		  let angle;
-		  
 		  if(ballPos.x < 0)
 			angle = Math.PI * 2 - arcWallPos.clone().add(new THREE.Vector3(0,0,1)).angleTo(ballPos);
 		  else
 			angle = arcWallPos.clone().add(new THREE.Vector3(0,0,1)).angleTo(ballPos)
-		
-		  let inAngle = angle >= arcWall.thetaStart ?  angle <= arcWall.thetaLength + arcWall.thetaStart ? true: false : false;
 		  
-		  var times = 5;
+		  let inAngle;
+		  if(arcWall.thetaStart + arcWall.thetaLength > 2 * Math.PI){
+			  
+			if((angle >= arcWall.thetaStart && angle <= 2 * Math.PI ) || (angle <= arcWall.thetaLength + arcWall.thetaStart - Math.PI * 2))
+				inAngle = true;
+			else 
+				inAngle = false;
+		  }
+		  else{
+			if(angle >= arcWall.thetaStart && angle <= arcWall.thetaLength + arcWall.thetaStart)
+				inAngle = true
+			else
+				inAngle = false;
+		  }
+		  var times = 8;
+		  arcWallPos.copy(new THREE.Vector3(0,arcWall.worldToLocal(this.pos.clone()).y,0))
+		  ballPos.copy(arcWall.worldToLocal(this.pos.clone()));
 		  let norV = arcWallPos.clone().sub(ballPos);
+			
+			if(arcWall.dis !== undefined){
+				times = arcWall.dis;
+			}
 			if(this.ID === "player")
 				arcWalls[i].children.forEach(function (b){b.material.opacity = 1})
-			if(norV.length() >= arcWall.R - this.r * times && Math.abs(arcWallPos.length()) <= arcWall.height / 2 && inAngle && this.ID === "player"){
-				arcWalls[i].children.forEach(function (b){b.material.opacity = 0.5})
+			if(norV.length() >= arcWall.R - this.r * times && Math.abs(arcWallPos.length()) <= arcWall.height / 2 && norV.length() <= arcWall.R && inAngle && this.ID === "player" ){
+				arcWalls[i].children.forEach(function (b){b.material.opacity = 0.3})
 			}
             if(norV.length() >= arcWall.R - this.r && norV.length() <= arcWall.R && Math.abs(arcWallPos.length()) <= arcWall.height / 2 && inAngle){
 				if(this.ID === "player"){
@@ -391,9 +453,10 @@ class Particle {
   }
   start(){
 	this.vel.set(0,0,0);
-	this.pos.set(0,0,0);
+	this.pos.set(0,2,100);
+	//this.pos.set(350,16,-220);
 	//this.pos.set(0,1,40);
-	//this.pos.set(230,81,-300); level 3
+	//this.pos.set(150,2,60);// level 3
   }
   play(audioBuffer) {
     const source = context.createBufferSource();
@@ -401,6 +464,114 @@ class Particle {
     source.connect(context.destination);
     source.start();
   }
+  /*
+  checkarea(x1,y1,x2,y2){
+		let Rect = makeRect(x1,y1,x2,y2);
+		if (Check_Intersect (Rect, balls[0], 1)) {
+			if(this.ID === "player"){
+				if(this.choose){
+					this.play(inholeSoundBuffer)//playSound2(soundSource.inHole)//this.inholeSound.play();
+				}   
+				this.choose = false;
+				this.inHole = false;
+				this.nowIsFlyP = false;
+				this.nowIsFlyC = false;
+				this.nowIsFlyF = false;
+						
+				countSwingReset();
+				if(!this.choose)
+					HUDForInHole();	
+				this.vel.set(0,0,0);
+			}
+			this.runInHole = true;
+		}
+  }
+  */
+  checkarea(){
+	 if(this.pos.y < -5){//第二關
+		  if(this.pos.x > 10 && this.pos.x < 40 && this.pos.z > -445&& this.pos.z < -425){
+			if(this.ID === "player"){
+				if(this.choose){
+					this.play(inholeSoundBuffer)//playSound2(soundSource.inHole)//this.inholeSound.play();
+				}   
+				this.choose = false;
+				this.inHole = false;
+				this.nowIsFlyP = false;
+				this.nowIsFlyC = false;
+				this.nowIsFlyF = false;
+						
+				countSwingReset();
+				if(!this.choose)
+					HUDForInHole();	
+				this.vel.set(0,0,0);
+			}
+			this.runInHole = true;			  
+		  }
+	  }
+	 if(this.pos.y <= 1.5){//第三關
+		if(this.pos.x > 386&& this.pos.x < 398&& this.pos.z > -295 && this.pos.z < -289){
+			if(this.ID === "player"){
+				if(this.choose){
+					this.play(inholeSoundBuffer)//playSound2(soundSource.inHole)//this.inholeSound.play();
+				}   
+				this.choose = false;
+				this.inHole = false;
+				this.nowIsFlyP = false;
+				this.nowIsFlyC = false;
+				this.nowIsFlyF = false;
+						
+				countSwingReset();
+				if(!this.choose)
+					HUDForInHole();	
+				this.vel.set(0,0,0);
+			}
+			this.runInHole = true;			  
+		  }		 
+	 }
+  }
 }
 
+function makeRect(x1,z1,x2,z2){
+	let Rect = {};
+    Rect.max = new THREE.Vector3(x1, 0, z1) ;
+    Rect.min = new THREE.Vector3(x2, 0, z2) ;
+    Rect.px =  new THREE.Vector3(1,0,0).sub(new THREE.Vector3((x1+x2)/2, 0, (z1+z2)/2));
+    return Rect;
+}	
+  
+function Check_Intersect(Rect, C, Rad){
+	const Rad2 = Rad * Rad;
+  
+  let xHat = Rect.px;
+  let zHat = xHat.clone().cross (new THREE.Vector3(0,1,0)).normalize();
+  
+  let R = {max:{x:0, z:0}, min:{x:0, z:0}};
+  let cp = Rect.max.clone().sub (C.pos);   
+  R.max.x = cp.dot (xHat), R.max.z = cp.dot (zHat);
+  
+	cp = Rect.min.clone().sub (C.pos);
+  R.min.x = cp.dot (xHat), R.min.z = cp.dot (zHat);
+  
+	if (R.max.x < 0) 			/* R to left of circle center */
+   	if (R.max.z < 0) 		/* R in lower left corner */
+     		return ((R.max.x * R.max.x + R.max.z * R.max.z) < Rad2);
+   	else if (R.min.z > 0) 	/* R in upper left corner */
+     		return ((R.max.x * R.max.x + R.min.z * R.min.z) < Rad2);
+   	else 					/* R due West of circle */
+     		return(Math.abs(R.max.x) < Rad);
+ 	else if (R.min.x > 0)  	/* R to right of circle center */
+   		if (R.max.z < 0) 	/* R in lower right corner */
+     			return ((R.min.x * R.min.x + R.max.z * R.max.z) < Rad2);
+   	else if (R.min.z > 0)  	/* R in upper right corner */
+     		return ((R.min.x * R.min.x + R.min.z * R.min.z) < Rad2);
+   	else 				/* R due East of circle */
+     		return (R.min.x < Rad);
+ 	else				/* R on circle vertical centerline */
+   		if (R.max.z < 0) 	/* R due South of circle */
+     		return (Math.abs(R.max.z) < Rad);
+   	else if (R.min.z > 0)  	/* R due North of circle */
+     		return (R.min.z < Rad);
+   	else 				/* R contains circle centerpoint */
+     		return(true);
+} 
 export {Particle}

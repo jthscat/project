@@ -3,7 +3,8 @@ import {createMultiMaterialObject} from 'https://cdn.skypack.dev/three@0.136/exa
 import {ParametricGeometry} from 'https://cdn.skypack.dev/three@0.136/examples/jsm/geometries/ParametricGeometry.js';
 import {FinitePlane,Wall} from './terrain.js'
 import {scene,sceneMap,renderer} from './render.js'
-var table1,table2,table3;
+import {class2g} from './main.js'
+var bigTable = new THREE.Group(),table1,table2,table3;
 
 var walls = [],holes = [],cylinders = [],planes = [],floors = [],arcWalls = [];
 
@@ -17,6 +18,12 @@ var obstacle1=new THREE.Group();
 var obstacle2=new THREE.Group();
 var obstacle3=new THREE.Group();
 var car,car2,redhorse2G;
+var boxg = new THREE.Group()
+var fang = new THREE.Group()
+var steveg= new THREE.Group();
+var wall49,wall50,wall51;
+let smallEraser1 = new THREE.Group(),smallEraser2 = new THREE.Group();
+let pressButton;
 var quad_uvs =
 [
 0.4, 0.0,
@@ -25,29 +32,50 @@ var quad_uvs =
 0.0, 1.0
 ];
 
+let arcWallGroup3;
+var textureTest,ctexture;
 function buildTerrain(){
+	
 	buildPlane();
 	buildWalls();
 	buildholes();
 	buildPillar();
 	buildfloors();
 	buildStoneWall();
-	buildClass3Wall();
-	buildArcWalls()
-	buildChess();
-	buildGoal();
+	buildArcWalls();
+	
+	buildGoal()
+	bulidMiniWorld()
+	
 	walls.push(level1Walls,level2Walls,level3Walls)
+	
 	class1.position.z = 30;
-	scene.add(class1)
 	class1Rotate.add(class1.clone())
+	class1.add(bigTable)
+	scene.add(class1)
+	class1.position.z = 90;
+	cylinders.class1Pos = new THREE.Vector3(0,0,90)
+	cylinders.y1 = 0;
 	
 	class2.position.z = 300;
 	class2Rotate.add(class2.clone())
+	class2.add(bigTable)
+	scene.add(class2)
+	class2Rotate.scale.set(0.9,0.9,0.9)
+	class2.position.z = 0;
+	cylinders.class2Pos = new THREE.Vector3(0,0,0)
+	cylinders.y2 = 0;
 	
-	class3.position.x = -350
-	class3.position.z = 300;
+	//class3.rotation.x = Math.PI/180 * 10;
 	class3Rotate.add(class3.clone())
-	class3Rotate.position.y = -50;
+
+	class3.add(bigTable)
+	scene.add(class3);
+	class3.position.set(300,0,-300);
+	
+	cylinders.class3Pos = new THREE.Vector3(400,0,-200)
+	cylinders.y31 = 0;
+	cylinders.y32 = 200;
 	
 	sceneMap.add(class1Rotate,class2Rotate,class3Rotate)
 	
@@ -59,8 +87,9 @@ function buildStoneWall(){
 	var stoneGeometry2 = new THREE.BoxGeometry(100,5,2.5);
 	var loader = new THREE.TextureLoader();
 	var texture = loader.load('https://i.imgur.com/euhOAfo.jpg');
+
 	var stoneMaterial = new THREE.MeshPhongMaterial({
-      map: texture,side:THREE.DoubleSide})
+      color: 0x8c8f8d,side:THREE.DoubleSide})
 	var stoneWall1 = new THREE.Mesh(stoneGeometry2,stoneMaterial);
 	stoneWall1.position.set(-25,-2.51,-30);
 	stoneWall1.rotation.y = -Math.PI / 2;
@@ -87,55 +116,6 @@ function buildStoneWall(){
 	
 	
 	class1.add(stoneWall1,stoneWall2,stoneWall3,stoneWall4,arcStoneWall1,arcStoneWall2,mesh)
-	//class2
-	
-	var stoneWall5 = new THREE.Mesh(stoneGeometry,stoneMaterial);
-	scene.add(stoneWall5);
-	stoneWall5.position.set(0,-2.51,-125);
-	
-	var stoneWall6 = new THREE.Mesh(stoneGeometry2,stoneMaterial);
-	scene.add(stoneWall6);
-	stoneWall6.position.set(-25,-2.51,-175);
-	stoneWall6.rotation.y = -Math.PI / 2;
-	
-	var stoneWall7 = new THREE.Mesh(stoneGeometry2,stoneMaterial);
-	scene.add(stoneWall7);
-	stoneWall7.position.set(-25,-2.51,-275);
-	stoneWall7.rotation.y = -Math.PI / 2;
-	
-	var stoneWall8 = new THREE.Mesh(stoneGeometry2,stoneMaterial);
-	scene.add(stoneWall8);
-	stoneWall8.position.set(25,-2.51,-175);
-	stoneWall8.rotation.y = -Math.PI / 2;
-	
-	var stoneWall9 = new THREE.Mesh(stoneGeometry,stoneMaterial);
-	scene.add(stoneWall9);
-	stoneWall9.position.set(25,-2.51,-250);
-	stoneWall9.rotation.y = -Math.PI / 2;
-	
-	var stoneWall10 = new THREE.Mesh(stoneGeometry2,stoneMaterial);
-	scene.add(stoneWall10);
-	stoneWall10.position.set(25,-2.51,-325);
-	
-	var stoneWall11 = new THREE.Mesh(stoneGeometry2,stoneMaterial);
-	scene.add(stoneWall11);
-	stoneWall11.position.set(125,-2.51,-325);
-	
-	var stoneWall12 = new THREE.Mesh(stoneGeometry2,stoneMaterial);
-	scene.add(stoneWall12);
-	stoneWall12.position.set(75,-2.51,-275);
-	
-	var stoneWall13 = new THREE.Mesh(stoneGeometry,stoneMaterial);
-	scene.add(stoneWall13);
-	stoneWall13.position.set(150,-2.51,-275);
-	
-	var stoneWall14 = new THREE.Mesh(stoneGeometry,stoneMaterial);
-	scene.add(stoneWall14);
-	stoneWall14.position.set(175,-2.51,-300);
-	stoneWall14.rotation.y = -Math.PI / 2;
-	
-	class2.add(stoneWall5.clone(),stoneWall6.clone(),stoneWall7.clone(),stoneWall8.clone(),stoneWall9.clone())
-	class2.add(stoneWall10.clone(),stoneWall11.clone(),stoneWall12.clone(),stoneWall13.clone(),stoneWall14.clone())
 	
 }
 function buildPlane(){
@@ -143,18 +123,26 @@ function buildPlane(){
   table1 = new THREE.Group();
   scene.add(table1);
   table1.updateMatrixWorld()
+	/*
   
   
   var loader2 = new THREE.TextureLoader();
   loader2.setCrossOrigin('');
   //test light map
   
-  var textureTest1 = loader2.load('https://i.imgur.com/tuIeXbi.png');  
+  //var textureTest1 = loader2.load('https://i.imgur.com/tuIeXbi.png');  
+  //var textureTest1 = loader2.load('https://i.imgur.com/PnIgpqe.png'); 漸層 
+  //var textureTest1 = loader2.load('https://i.imgur.com/D2mGAc6.png');  漸層黑底
+  //var textureTest1 = loader2.load('https://i.imgur.com/L55ESsM.png');  //漸層透明黑底
+  //var textureTest1 = loader2.load('https://i.imgur.com/FTs5YQj.png');  //漸層透明黑底縮寬度
+   textureTest1 = loader2.load('https://i.imgur.com/FyMwBQ8.png');  //漸層透明黑底縮寬度
+  
+  
   let material1 = new THREE.MeshBasicMaterial({
         map: textureTest1,
         side: THREE.DoubleSide,
         transparent: true,
-        opacity: 0.7
+        opacity: 0.8
   });
   let material2 = new THREE.MeshBasicMaterial({
         color: 0x006000,
@@ -165,6 +153,14 @@ function buildPlane(){
   let ground = new THREE.PlaneGeometry(50, 50)
   
   let floor = createMultiMaterialObject(ground, [material2, material1]);
+   textureTest1.wrapS = THREE.RepeatWrapping;
+   textureTest1.wrapT = THREE.RepeatWrapping;
+   textureTest1.repeat.set (1,1/5);
+   textureTest1.offset.x = 0;
+   textureTest1.offset.y = 2/5;
+   
+  
+  
   floor.rotation.x = -Math.PI / 2;
   floor.position.y = 0.02;
   floor.position.z = -5;
@@ -172,9 +168,29 @@ function buildPlane(){
 
   plane = new FinitePlane(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1), floor, 50 * 1.5, table1);
   plane.update()
-  planes.push(plane);
+  planes.push(plane); 
   
-  let floor2 = createMultiMaterialObject(ground, [material2, material1]);
+  var rloader = new THREE.TextureLoader();
+  rloader.setCrossOrigin('');
+  //rtexture = rloader.load('https://i.imgur.com/JRZtHnr.png');
+  rtexture = rloader.load('https://i.imgur.com/bHusA1w.png');
+  
+  let rmaterial = new THREE.MeshBasicMaterial({
+        map: rtexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.8
+  });
+  
+  
+  let floor2 = createMultiMaterialObject(ground, [material2, rmaterial]);
+  
+  rtexture.wrapS = THREE.RepeatWrapping;
+   rtexture.wrapT = THREE.RepeatWrapping;
+   rtexture.repeat.set (1,1/5);
+   rtexture.offset.x = 0;
+   rtexture.offset.y = 2/5;
+  
   floor2.rotation.x = -Math.PI / 2;
   floor2.position.set(0,0.02,-55)
   floor2.receiveShadow = true;
@@ -182,8 +198,28 @@ function buildPlane(){
   plane = new FinitePlane(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1), floor2, 50 * 1.5, table1);
   plane.update()
   planes.push(plane);
+  
+  var lloader = new THREE.TextureLoader();
+  lloader.setCrossOrigin('');
+  //var ltexture = lloader.load('https://i.imgur.com/jpMeea3.png');
+  ltexture = lloader.load('https://i.imgur.com/vbZJFUP.png');
+  
+  let lmaterial = new THREE.MeshBasicMaterial({
+        map: ltexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.8
+  });
 
-  let floor3 = createMultiMaterialObject(ground, [material2, material1]);
+  
+  let floor3 = createMultiMaterialObject(ground, [material2, lmaterial]);
+  
+  ltexture.wrapS = THREE.RepeatWrapping;
+   ltexture.wrapT = THREE.RepeatWrapping;
+   ltexture.repeat.set (1,1/5);
+   ltexture.offset.x = 0;
+   ltexture.offset.y = 2/5;
+   
   floor3.rotation.x = -Math.PI / 2;
   floor3.position.set(50,0.02,-55)
   floor3.receiveShadow = true;
@@ -192,8 +228,29 @@ function buildPlane(){
   plane.update()
   planes.push(plane);
   
-  //let circleFloor = createMultiMaterialObject(ground, [material2, material1]);
-  let circleFloor = new THREE.Mesh(new THREE.CircleGeometry(50,32,0,Math.PI), new THREE.MeshBasicMaterial({color: 0x006000,side: THREE.DoubleSide}));
+  
+  var cloader = new THREE.TextureLoader();
+  cloader.setCrossOrigin('');
+   
+  //var ctexture = cloader.load('https://i.imgur.com/zIWgsTi.png');
+  ctexture = cloader.load('https://i.imgur.com/9Fh7VYy.png');
+  
+  let cmaterial = new THREE.MeshBasicMaterial({
+        map: ctexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.8
+  });
+  
+  let circle = new THREE.CircleGeometry(50,32,0,Math.PI);
+  let circleFloor = createMultiMaterialObject(circle, [material2, cmaterial]);
+  
+  ctexture.wrapS = THREE.RepeatWrapping;
+   ctexture.wrapT = THREE.RepeatWrapping;
+   ctexture.repeat.set (1,1/5);
+   ctexture.offset.x = 0;
+   ctexture.offset.y = 2/5;
+  
   circleFloor.rotation.x = -Math.PI / 2;
   circleFloor.position.set(25,0.01,-80);
   circleFloor.receiveShadow = true;
@@ -224,6 +281,7 @@ function buildPlane(){
 
 	let materialForHole = new THREE.MeshBasicMaterial({color: 0x006000,side:THREE.DoubleSide,alphaMap:alpha,alphaTest: 0.5,})
     let hole = createMultiMaterialObject(ground, [materialForHole, material1]);
+	//let hole = new THREE.Mesh(ground,materialForHole)
 	hole.rotation.x=-Math.PI/2;  
 	hole.rotation.z=-Math.PI;  
 	hole.position.set(50,0,-5);
@@ -234,35 +292,8 @@ function buildPlane(){
 	planes.push(plane);
 	 
 	class1.add(table1,box1)
-	
-	//class2
-	table2 = new THREE.Group();
-	scene.add(table2);
-	table2.updateMatrixWorld()
-	
-	var box2 = new THREE.Mesh(new THREE.BoxGeometry(5,0.01,5),new THREE.MeshBasicMaterial({transparent: true,opacity:0.1}));
-	box2.position.set(0,0.2,-135);
-	box2.material.color.copy(color2)
-	box2.receiveShadow = true;
-	scene.add(box2);
-
-	/*let hole2 = createMultiMaterialObject(ground, [materialForHole, material1]);
-    //var hole2= new THREE.Mesh(new THREE.PlaneGeometry(50,50),new THREE.MeshPhongMaterial({map: texture2,side:THREE.DoubleSide,alphaMap:alpha,alphaTest: 0.1,}));
-	hole2.rotation.x=-Math.PI/2;  
-	hole2.position.set(150,0,-300);
-	hole2.rotation.z = Math.PI/2;
-	hole2.receiveShadow = true;
-	
-
-	plane = new FinitePlane(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1),hole2, 50 * 1.5, table2);
-	plane.update()
-	planes.push(plane);
 	*/
-	
-	class2.add(table2.clone(),box2.clone())
-	
-	//class3
-	
+	//class2
 	
 	//big floor
 	var loader2 = new THREE.TextureLoader();
@@ -274,10 +305,10 @@ function buildPlane(){
 	var bigfloor = new THREE.Mesh(new THREE.PlaneGeometry(5000,5000), new THREE.MeshPhongMaterial({map: textureFloor,side:THREE.DoubleSide}));
 	bigfloor.material.map.repeat.set( 500, 500 );
 	bigfloor.rotation.x = -Math.PI / 2;
-	bigfloor.position.y = -4.5;
+	bigfloor.position.y = -5.5;
 	bigfloor.receiveShadow = true;
 	  
-	plane = new FinitePlane(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1), bigfloor, 150 * 1.5, table1);
+	plane = new FinitePlane(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1), bigfloor, 150 * 1.5, bigTable);
 	plane.update()
 	planes.push(plane);
 	
@@ -307,313 +338,104 @@ function buildWalls(){
   level1Walls[3].mesh.position.set(50, 2.5, 20)
   for(var i = 0; i < 4; i++)
 	class1.add(level1Walls[i].mesh)
-  //時間性關卡:抬升牆壁 class 2
-   var clippingPlanes = new THREE.Plane(new THREE.Vector3(0,1,0), 0.0);
-  for(var i = 0; i < 3; i++){
-	  if(i < 1){
-		let x = new Wall(20,15,new THREE.Vector3(0,0,1));
-		x.update();
-		//console.log(x);
-		x.mesh.material.clippingPlanes = [clippingPlanes]
-		x.mesh.material.clipShadows =  true;
-		level2Walls.push(x)
-		
-	  }
-	  else{
-		let x = new Wall(13,15,new THREE.Vector3(0,0,1))
-		x.update();
-		x.mesh.material.clippingPlanes = [clippingPlanes]
-		x.mesh.material.clipShadows =  true;
-		level2Walls.push(x);
-		
-	  }	  
-  }
-   
-   level2Walls[0].mesh.position.set(0, 3, -30)
-   level2Walls[1].mesh.position.set(16.5, -15, -30)
-   level2Walls[2].mesh.position.set(-16.5, -15, -30)
-   
-     
-   for(var i = 0; i < 3; i++){
-	  if(i ==0){
-		let x = new Wall(20,2.5,new THREE.Vector3(0,0,1),1,0x04220E);
-		x.update();
-		x.mesh.material.clippingPlanes = [clippingPlanes]
-		x.mesh.material.clipShadows =  true;
-		level2Walls.push(x)
-	  }
-      else{
-        let x = new Wall(2.5,15,new THREE.Vector3(0,0,1),1);
-		x.update();
-		x.mesh.material.clippingPlanes = [clippingPlanes]
-		x.mesh.material.clipShadows =  true;
-		level2Walls.push(x)
-      }	   
-  }
-  level2Walls[3].mesh.position.set(0, 10.6, -30)
-  level2Walls[3].mesh.rotation.x = -Math.PI / 2; 
-  level2Walls[4].mesh.position.set(10, 3, -30)
-  level2Walls[4].mesh.rotation.y = Math.PI / 2;
-  level2Walls[5].mesh.position.set(-10, 3, -30)
-  level2Walls[5].mesh.rotation.y = -Math.PI / 2;
-  obstacle1.add(level2Walls[0].mesh,level2Walls[3].mesh,level2Walls[4].mesh,level2Walls[5].mesh); 
-  //scene.add(obstacle1);
-  
-  for(var i = 0; i < 6; i++){
-	  if(i <2){
-		let x = new Wall(13,2.5,new THREE.Vector3(0,0,1),1,0x04220E);
-		x.update();
-		x.mesh.material.clippingPlanes = [clippingPlanes]
-		x.mesh.material.clipShadows =  true;
-		level2Walls.push(x)
-	  }
-      else{
-        let x = new Wall(2.5,15,new THREE.Vector3(0,0,1),1);
-		x.mesh.material.clippingPlanes = [clippingPlanes]
-		x.mesh.material.clipShadows =  true;
-		x.update();
-		level2Walls.push(x)
-      }	   
-  }
-  level2Walls[6].mesh.position.set(16.5, -7.4, -30)
-  level2Walls[6].mesh.rotation.x = -Math.PI / 2;
-  level2Walls[8].mesh.position.set(22.5, -15, -30)
-  level2Walls[8].mesh.rotation.y = Math.PI / 2;
-  level2Walls[9].mesh.position.set(10, -15, -30)
-  level2Walls[9].mesh.rotation.y = -Math.PI / 2;
-  obstacle2.add(level2Walls[1].mesh,level2Walls[6].mesh,level2Walls[8].mesh,level2Walls[9].mesh); 
-  //scene.add(obstacle2);
-  level2Walls[7].mesh.position.set(-16.5, -7.4, -30)
-  level2Walls[7].mesh.rotation.x = -Math.PI / 2;
-  level2Walls[10].mesh.position.set(-10, -15, -30)
-  level2Walls[10].mesh.rotation.y = Math.PI / 2;
-  level2Walls[11].mesh.position.set(-22.5, -15, -30)
-  level2Walls[11].mesh.rotation.y = -Math.PI / 2;  
-  obstacle3.add(level2Walls[2].mesh,level2Walls[7].mesh,level2Walls[10].mesh,level2Walls[11].mesh); 
-  //scene.add(obstacle3);
-  obstacle1.position.z =-200;
-  obstacle2.position.z =-200;
-  obstacle3.position.z =-200;
-  
-  //時間性關卡:車子
-  car = new THREE.Group();
-  for (var i = 0; i < 4; i++) {
-    if (i < 2) {
-      let x = new Wall(15,10, new THREE.Vector3(0, 0, -1),1);
-	  x.mesh.material.clippingPlanes = [clippingPlanes]
-	  x.mesh.material.clipShadows =  true;	  
-	  x.update();
-      level2Walls.push(x);
-    }
-	else {
-      let x = new Wall(5,10, new THREE.Vector3(0, 0, -1),1);
-      x.mesh.material.clippingPlanes = [clippingPlanes]
-	  x.mesh.material.clipShadows =  true;
-      x.update();
-      level2Walls.push(x);
-    }
-  }
-  
-  var cargeometry = new THREE.BoxGeometry(5, 10, 15);
-  var carmaterial = new THREE.MeshPhongMaterial({
-      color: 0xA23400,
-      shininess: 200,
-      transparent: true,
-      opacity: 1
-    })
-  var carmesh= new THREE.Mesh(cargeometry, carmaterial);
-  carmesh.position.set(0,2.5,-3)
-  
-  car.add(carmesh);
-  car.add(level2Walls[12].mesh);
-  car.add(level2Walls[13].mesh);
-  car.add(level2Walls[14].mesh);
-  car.add(level2Walls[15].mesh);
-  //car.rotation.y = -Math.PI / 2;
-  car.position.set(75,2.5,-300)
-  
-  //scene.add(car);
-  
-  
-  level2Walls[12].mesh.rotation.y = -Math.PI / 2;
-  level2Walls[13].mesh.rotation.y = Math.PI / 2;
-  level2Walls[15].mesh.rotation.y = Math.PI;
 
-  level2Walls[12].mesh.position.set(-2.5, 2.5, -3)
-  level2Walls[13].mesh.position.set(2.5, 2.5, -3)
-  level2Walls[14].mesh.position.set(0, 2.5, 4.5)
-  level2Walls[15].mesh.position.set(0, 2.5, -10.5)
-  
-  car2 = new THREE.Group();
-  for (var i = 0; i < 4; i++) {
-    if (i < 2) {
-      let x = new Wall(15,10, new THREE.Vector3(0, 0, -1),1);
-      x.update();
-	  x.mesh.material.clippingPlanes = [clippingPlanes]
-	  x.mesh.material.clipShadows =  true;
-      level2Walls.push(x);
-    }
-	else {
-      let x = new Wall(5,10, new THREE.Vector3(0, 0, -1),1);
-      x.update();
-	  x.mesh.material.clippingPlanes = [clippingPlanes]
-	  x.mesh.material.clipShadows =  true;
-      level2Walls.push(x);
-    }
-  }
-  
-  var carmesh2= new THREE.Mesh(cargeometry, carmaterial);
-  carmesh2.position.set(0,2.5,-3)
-  
-  car2.add(carmesh2);
-  car2.add(level2Walls[16].mesh);
-  car2.add(level2Walls[17].mesh);
-  car2.add(level2Walls[19].mesh);
-  car2.add(level2Walls[18].mesh);
-  //car.rotation.y = -Math.PI / 2;
-  car2.position.set(125,2.5,-300)
-  
-  //scene.add(car2);
-  
-  
-  level2Walls[16].mesh.rotation.y = -Math.PI / 2;
-  level2Walls[17].mesh.rotation.y = Math.PI / 2;
-  level2Walls[19].mesh.rotation.y = Math.PI;
-
-  level2Walls[16].mesh.position.set(-2.5, 2.5, -3)
-  level2Walls[17].mesh.position.set(2.5, 2.5, -3)
-  level2Walls[18].mesh.position.set(0, 2.5, 4.5)
-  level2Walls[19].mesh.position.set(0, 2.5, -10.5)
-  
   //第二關
-   for (var i = 0; i < 3; i++) {
-    if (i < 2) {
-      let x = new Wall(50,5, new THREE.Vector3(0, 0, -1));
+  
+   for (var i = 0; i < 6; i++) {
+    if (i < 4) {
+      let x = new Wall(32,12.5, new THREE.Vector3(0, 0, -1));
       x.update();
       level2Walls.push(x);
     }
 	else {
-      let x = new Wall(200,5, new THREE.Vector3(0, 0, -1));
+      let x = new Wall(300,12.5, new THREE.Vector3(0, 0, -1));
       x.update();
       level2Walls.push(x);
     }
   }
-  level2Walls[21].mesh.rotation.y = -Math.PI / 2;
-  level2Walls[22].mesh.rotation.y = -Math.PI / 2;
+  level2Walls[4].mesh.rotation.y = -Math.PI / 2;
+  level2Walls[5].mesh.rotation.y = Math.PI / 2;
+  level2Walls[1].mesh.rotation.y = Math.PI ;
+  level2Walls[2].mesh.rotation.y = Math.PI ;
 
-  level2Walls[20].mesh.position.set(0, 2.5, -125)
-  level2Walls[21].mesh.position.set(175, 2.5, -300)
-  level2Walls[22].mesh.position.set(-25, 2.5, -225)
+  level2Walls[0].mesh.position.set(-10, 6.25, -125)
+  level2Walls[1].mesh.position.set(-10, 6.25, -425)
+  level2Walls[2].mesh.position.set(60, 6.25, -425)
+  level2Walls[3].mesh.position.set(60, 6.25, -125)
+  level2Walls[4].mesh.position.set(75, 6.25, -275)
+  level2Walls[5].mesh.position.set(-25, 6.25, -275)
   
-  level2Walls[20].mesh.visible = false;
-  
-  
-  let x = new Wall(200,5, new THREE.Vector3(0, 0, -1));
+  let x = new Wall(100,12.5, new THREE.Vector3(0, 0, -1));
       x.update();
       level2Walls.push(x);
-  level2Walls[23].mesh.position.set(75, 2.5, -325)
   
-  
-  x = new Wall(150,5, new THREE.Vector3(0, 0, -1));
-  x.update();
-  level2Walls.push(x);
-  level2Walls[24].mesh.rotation.y = -Math.PI / 2;
-  level2Walls[24].mesh.position.set(25, 2.5, -200)
-  
-  x = new Wall(150,5, new THREE.Vector3(0, 0, -1));
-  x.update();
-  level2Walls.push(x);
-  level2Walls[25].mesh.position.set(100, 2.5, -275)
-  
+  level2Walls[6].mesh.position.set(25, 6.25, -125)
+  level2Walls[6].mesh.visible=false;
 
-  class2.add(obstacle1.clone(),obstacle2.clone(),obstacle3.clone(),car.clone(),car2.clone())
-  for (var i = 0; i <= 9; i++)
-	class2.add(level2Walls[i].mesh.clone());
-
-  //class 3
-  
-
-  
-/*
-  const shape = new THREE.Shape();
-  shape.moveTo( 0, 0 );
-  shape.lineTo( 0, 5 );
-  shape.lineTo( 30, 10 );
-  shape.lineTo( 30, 0 );
-  shape.lineTo( 0, 0 );
-  
-  const extrudeSettings = {
-	steps: 10,
-	depth: 2.4,
-	bevelEnabled: true,
-	bevelThickness: 0.2,
-	bevelSize: 0,
-	bevelOffset: 0,
-	bevelSegments: 3
-  };
-
-	const lineGeometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-	const lineMaterial = new THREE.MeshPhongMaterial({
-		  color: 0xA23400,
-		  shininess: 200,
-		  transparent: true,
-		  opacity: 1
-		});
-		
-	const lineMesh = new THREE.Mesh( lineGeometry, lineMaterial ) ;
-	lineMesh.position.set(110,0,-101.25)
+  //class2.add(obstacle1.clone(),obstacle2.clone(),obstacle3.clone(),car.clone(),car2.clone())
+  for (var i = 0; i <= 6; i++)
+	class2.add(level2Walls[i].mesh);
+	//第二關的steve
+	let wall46 = new Wall(8,32,new THREE.Vector3(0,0,1))
+	wall46.mesh.position.set(20,7,0);
+	wall46.mesh.rotation.x=-Math.PI;
+	level2Walls.push(wall46)
+	class2.add(wall46.mesh)
+	wall46.mesh.visible=false;
+			
+	let wall47 = new Wall(8,32,new THREE.Vector3(0,0,1))
+	wall47.mesh.position.set(47,-7,0);
+	level2Walls.push(wall47)
+	class2.add(wall47.mesh)
+	wall47.mesh.visible=false;
+			
+	let wall48 = new Wall(8,32,new THREE.Vector3(0,0,1))
+	wall48.mesh.position.set(-7,-7,0);
+	level2Walls.push(wall48)
+	class2.add(wall48.mesh)
+	wall48.mesh.visible=false;
+	steveg.add(wall46.mesh,wall47.mesh,wall48.mesh)
+	steveg.position.set(0,23,-294);
+	scene.add(steveg);
+			
+			
+	wall49 = new Wall(8,30,new THREE.Vector3(0,0,1),0,0xA23400,5)
+	wall49.mesh.position.set(20,15,-375);
+	level2Walls.push(wall49)
+	class2.add(wall49.mesh)
+	wall49.mesh.visible=false;
 	
-	const lineGeometry2 = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-	const lineMesh2 = new THREE.Mesh( lineGeometry2, lineMaterial ) ;
-	lineMesh2.position.set(110,0,-151.25)
-
-	const lineGeometry3 = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-	const lineMesh3 = new THREE.Mesh( lineGeometry3, lineMaterial ) ;
-	lineMesh3.rotation.y = -Math.PI / 2;
-	lineMesh3.position.set(141.25,0,-180)
+	wall50 = new Wall(8,30,new THREE.Vector3(0,0,1),0,0xA23400,5)
+	wall50.mesh.position.set(47,15,-375);
+	level2Walls.push(wall50)
+	class2.add(wall50.mesh)
+	wall50.mesh.visible=false;
 	
-	const lineGeometry4 = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-	const lineMesh4 = new THREE.Mesh( lineGeometry4, lineMaterial );
-	lineMesh4.rotation.y = -Math.PI / 2;
-	lineMesh4.position.set(191.25,0,-180)
-
-	scene.add( lineMesh,lineMesh2,lineMesh3,lineMesh4); 
-*/
-}
-function buildClass3Wall(){
-	let class3wall = [];
+	wall51 = new Wall(8,30,new THREE.Vector3(0,0,1),0,0xA23400,5)
+	wall51.mesh.position.set(-7,15,-375);
+	level2Walls.push(wall51)
+	class2.add(wall51.mesh)
+	wall51.mesh.visible=false;
 	
-	for(var i=0;i<3;i++)
-   {
-      let x = new Wall(100,5, new THREE.Vector3(0, 0, -1));
-      x.update();
-      class3wall.push(x);
-   }
-   class3wall[0].mesh.rotation.y = -Math.PI / 2;
-   
-   class3wall[0].mesh.position.set(225, 82.5, -275);
-   class3wall[1].mesh.position.set(275,82.5,-325);
-   class3wall[2].mesh.position.set(275,82.5,-225);
-   
-   for(var i=0;i<6;i++)
-   {
-      let x = new Wall(200,5, new THREE.Vector3(0, 0, -1));
-      x.update();
-      class3wall.push(x);
-   }
-   
-   class3wall[3].mesh.position.set(425, 82.5, -250);
-   class3wall[4].mesh.position.set(425,82.5,-300);
-   class3wall[5].mesh.position.set(425, 42.5, -250);
-   class3wall[6].mesh.position.set(425,42.5,-200);
-   class3wall[7].mesh.position.set(425, 42.5, -300);
-   class3wall[8].mesh.position.set(425,42.5,-350);
-   
-	for(var i = 0; i <=8; i++)
-	  class3.add(class3wall[i].mesh.clone());
-  
-   return class3wall;
-	
+	let wall52 = new Wall(8,32,new THREE.Vector3(0,0,1),0,0xA23400,5)
+	wall52.mesh.position.set(20,15,-235);
+	level2Walls.push(wall52)
+	class2.add(wall52.mesh)
+	wall52.mesh.visible=false;
+			
+	let wall53 = new Wall(8,32,new THREE.Vector3(0,0,1),0,0xA23400,5)
+	wall53.mesh.position.set(47,15,-235);
+	level2Walls.push(wall53)
+	class2.add(wall53.mesh)
+	wall53.mesh.visible=false;
+			
+	let wall54 = new Wall(8,32,new THREE.Vector3(0,0,1),0,0xA23400,5)
+	wall54.mesh.position.set(-7,15,-235);
+	level2Walls.push(wall54)
+	class2.add(wall54.mesh)
+	wall54.mesh.visible=false;
+			
+    class2.add(class2g)
 }
 function buildholes(){
 	
@@ -769,10 +591,9 @@ function buildholes(){
 	block2.normal = new THREE.Vector3(0,1,0);
 	holes.push(block2)
 	ballhole2.add(block2)
-	scene.add(ballhole2);
 	ballhole2.position.set(149.6,0,-300);
 	
-	class2.add(ballhole2.clone())
+	//class2.add(ballhole2)
 	//class3
 
 	
@@ -832,274 +653,251 @@ function buildPillar(){
 	cylinders.push(pillarC16)
 	
 	class1.add(pillarC11,pillarC12,pillarC13,pillarC14,pillarC15,pillarC16)
-	/*
-	var class21 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	class21.R = 2;
-	class21.height = 6
-	class21.position.set(60,3,-150);
-	class21.ID = "wall"
-	class21.castShadow = true;
-	scene.add(class21)
-	cylinders.push(class21)
 	
-	var class22 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	class22.R = 2;
-	class22.height = 6
-	class22.position.set(60,3,-100);
-	class22.ID = "wall"
-	class22.castShadow = true;
-	scene.add(class22)
-	cylinders.push(class22)
-	
-	var class23 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	class23.R = 2;
-	class23.height = 6
-	class23.position.set(140,3,-230);
-	class23.ID = "wall"
-	class23.castShadow = true;
-	scene.add(class23)
-	cylinders.push(class23)
-	
-	var class24 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	class24.R = 2;
-	class24.height = 6
-	class24.position.set(190,3,-230);
-	class24.ID = "wall"
-	class24.castShadow = true;
-	scene.add(class24)
-	cylinders.push(class24)
-	
-	var class25 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,11,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	class25.R = 2;
-	class25.height = 11
-	class25.position.set(140,5.5,-150);
-	class25.ID = "wall"
-	class25.castShadow = true;
-	scene.add(class25)
-	cylinders.push(class25)
-	
-	var class26 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,11,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	class26.R = 2;
-	class26.height = 11
-	class26.position.set(190,5.5,-100);
-	class26.ID = "wall"
-	class26.castShadow = true;
-	scene.add(class26)
-	cylinders.push(class26)
-
-	var class27 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,7,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	class27.R = 2;
-	class27.height = 7
-	class27.position.set(110,3.5,-100)
-	class27.ID = "wall"
-	class27.castShadow = true;
-	scene.add(class27)
-	cylinders.push(class27)
-
-	var class28 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,7,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	class28.R = 2;
-	class28.height = 7
-	class28.position.set(110,3.5,-150)
-	class28.ID = "wall"
-	class28.castShadow = true;
-	scene.add(class28)
-	cylinders.push(class28)
-
-	var class29 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,7,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	class29.R = 2;
-	class29.height = 7
-	class29.position.set(140,3.5,-180)
-	class29.ID = "wall"
-	class29.castShadow = true;
-	scene.add(class29)
-	cylinders.push(class29)
-
-	var class211 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,7,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	class211.R = 2;
-	class211.height = 7
-	class211.position.set(190,3.5,-180)
-	class211.ID = "wall"
-	class211.castShadow = true;
-	scene.add(class211)
-	cylinders.push(class211)
-
-	var class212 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,11,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	class212.R = 2;
-	class212.height = 11
-	class212.position.set(140,5.5,-100);
-	class212.ID = "wall"
-	class212.castShadow = true;
-	scene.add(class212)
-	cylinders.push(class212)
-
-	var class213 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,11,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	class213.R = 2;
-	class213.height = 8
-	class213.position.set(190,5.5,-150);
-	class213.ID = "wall"
-	class213.castShadow = true;
-	scene.add(class213)
-	cylinders.push(class213)
-	*/
-	//第二關柱子
-	var pillarC21 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC21.R = 2;
-	pillarC21.height = 6
-	pillarC21.position.set(25,3,-125);
-	pillarC21.ID = "wall"
-	pillarC21.castShadow = true;
-	scene.add(pillarC21)
-	cylinders.push(pillarC21)
-	
-	var pillarC22 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC22.R = 2;
-	pillarC22.height = 6
-	pillarC22.position.set(-25,3,-125);
-	pillarC22.ID = "wall"
-	pillarC22.castShadow = true;
-	scene.add(pillarC22)
-	cylinders.push(pillarC22)
-	
-	var pillarC23 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC23.R = 2;
-	pillarC23.height = 6
-	pillarC23.position.set(25,3,-275);
-	pillarC23.ID = "wall"
-	pillarC23.castShadow = true;
-	scene.add(pillarC23)
-	cylinders.push(pillarC23)
-	
-	var pillarC24 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC24.R = 2;
-	pillarC24.height = 6
-	pillarC24.position.set(-25,3,-325);
-	pillarC24.ID = "wall"
-	pillarC24.castShadow = true;
-	scene.add(pillarC24)
-	cylinders.push(pillarC24)
-	
-	var pillarC25 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC25.R = 2;
-	pillarC25.height = 6
-	pillarC25.position.set(175,3,-275);
-	pillarC25.ID = "wall"
-	pillarC25.castShadow = true;
-	scene.add(pillarC25)
-	cylinders.push(pillarC25)
-	
-	var pillarC26 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC26.R = 2;
-	pillarC26.height = 6
-	pillarC26.position.set(175,3,-325);
-	pillarC26.ID = "wall"
-	pillarC26.castShadow = true;
-	scene.add(pillarC26)
-	cylinders.push(pillarC26)
-	
-	class2.add(pillarC21.clone(),pillarC22.clone(),pillarC23.clone(),pillarC24.clone(),pillarC25.clone(),pillarC26.clone())
-	///class 3
-	
-	var pillarC31 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC31.R = 2;
-	pillarC31.height = 6
-	pillarC31.position.set(225,83,-325);
-	pillarC31.ID = "wall"
-	pillarC31.castShadow = true;
-	scene.add(pillarC31)
-	cylinders.push(pillarC31)
-	
-	var pillarC32 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC32.R = 2;
-	pillarC32.height = 6
-	pillarC32.position.set(225,83,-225);
-	pillarC32.ID = "wall"
-	pillarC32.castShadow = true;
-	scene.add(pillarC32)
-	cylinders.push(pillarC32)
-	
-	var pillarC33 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC33.R = 2;
-	pillarC33.height = 6
-	pillarC33.position.set(325,83,-325);
-	pillarC33.ID = "wall"
-	pillarC33.castShadow = true;
-	scene.add(pillarC33)
-	cylinders.push(pillarC33)
-	
-	var pillarC34 = new THREE.Mesh(new THREE.CylinderGeometry(2,2,6,64),new THREE.MeshPhongMaterial({color:0x642100,clippingPlanes: [localPlane]}));
-	pillarC34.R = 2;
-	pillarC34.height = 6
-	pillarC34.position.set(325,83,-225);
-	pillarC34.ID = "wall"
-	pillarC34.castShadow = true;
-	scene.add(pillarC34)
-	cylinders.push(pillarC34)
-	
-	
-
-	class3.add(pillarC31.clone(),pillarC32.clone(),pillarC33.clone(),pillarC34.clone())
 }
 function buildfloors(){
-	
-	//class2
 	var heightFunc = function(x,z) {
-	  let K1 = 5,p1x = -20,p1z = -260,w1 = 15;
-	  let K2 = 5, p2x = 15, p2z = -260, w2 = 15;
-	  let K3 = 5, p3x = 50, p3z = -280, w3 = 15;
-	  let K4 = 5, p4x = 50, p4z = -320, w4 = 15;
-	  let K5 = 2, p5x = 20, p5z = -290, w5 = 10;
-	  let K6 = 2, p6x = 20, p6z = -310, w6 = 10;
-	  let K7 = 2, p7x = -20, p7z = -290, w7 = 10;
-	  let K8 = 2, p8x = -20, p8z = -310, w8 = 10;
+	  let K1 = 5,p1x = 50,p1z = 40,w1 = 15;
+	  let K2 = 5, p2x = 0, p2z = 40, w2 = 15;
+	  let K3 = 5, p3x = 25, p3z = 10, w3 = 15;
+	  let K4 = 5, p4x = 25, p4z = -40, w4 = 15;
 	  
 	  return K1 * Math.exp(
 		-(x - p1x) * (x - p1x) / w1 / w1 - (z - p1z) * (z - p1z) / w1 / w1) + K2 * Math.exp(
 		-(x - p2x) * (x - p2x) / w2 / w2 - (z - p2z) * (z - p2z) / w2 / w2) + K3 * Math.exp(
 		-(x - p3x) * (x - p3x) / w3 / w3 - (z - p3z) * (z - p3z) / w3 / w3) + K4 * Math.exp(
-		-(x - p4x) * (x - p4x) / w4 / w4 - (z - p4z) * (z - p4z) / w4 / w4) - K5 * Math.exp(
-		-(x - p5x) * (x - p5x) / w5 / w5 - (z - p5z) * (z - p5z) / w5 / w5) - K6 * Math.exp(
-		-(x - p6x) * (x - p6x) / w6 / w6 - (z - p6z) * (z - p6z) / w6 / w6) - K7 * Math.exp(
-		-(x - p7x) * (x - p7x) / w7 / w7 - (z - p7z) * (z - p7z) / w7 / w7) - K8 * Math.exp(
-		-(x - p8x) * (x - p8x) / w8 / w8 - (z - p8z) * (z - p8z) / w8 / w8)
+		-(x - p4x) * (x - p4x) / w4 / w4 - (z - p4z) * (z - p4z) / w4 / w4)
 	}
 	var inHeightFunc = function(x,z){
-	  let K1 = 5,p1x = -20,p1z = -260,w1 = 15;
-	  let K2 = 5, p2x = 15, p2z = -260, w2 = 15;
-	  let K3 = 5, p3x = 50, p3z = -280, w3 = 15;
-	  let K4 = 5, p4x = 50, p4z = -320, w4 = 15;
-	  let K5 = 2, p5x = 20, p5z = -290, w5 = 10;
-	  let K6 = 2, p6x = 20, p6z = -310, w6 = 10;
-	  let K7 = 2, p7x = -20, p7z = -290, w7 = 10;
-	  let K8 = 2, p8x = -20, p8z = -310, w8 = 10;
+	  let K1 = 5,p1x = 50,p1z = 40,w1 = 15;
+	  let K2 = 5, p2x = 0, p2z = 40, w2 = 15;
+	  let K3 = 5, p3x = 25, p3z = 10, w3 = 15;
+	  let K4 = 5, p4x = 25, p4z = -40, w4 = 15;
+
 		return [- K1 * Math.exp(
 		-(x - p1x) * (x - p1x) / w1 / w1 - (z - p1z) * (z - p1z) / w1 / w1) * (-2 * ((x - p1x) / w1) / w1 ) - K2 * Math.exp(
 		-(x - p2x) * (x - p2x) / w2 / w2 - (z - p2z) * (z - p2z) / w2 / w2) * (-2 * ((x - p2x) / w2) / w2 ) - K3 * Math.exp(
 		-(x - p3x) * (x - p3x) / w3 / w3 - (z - p3z) * (z - p3z) / w3 / w3) * (-2 * ((x - p3x) / w3) / w3 ) - K4 * Math.exp(
-		-(x - p4x) * (x - p4x) / w4 / w4 - (z - p4z) * (z - p4z) / w4 / w4) * (-2 * ((x - p4x) / w4) / w4 ) + K5 * Math.exp(
-		-(x - p5x) * (x - p5x) / w5 / w5 - (z - p5z) * (z - p5z) / w5 / w5) * (-2 * ((x - p5x) / w5) / w5 ) + K6 * Math.exp(
-		-(x - p6x) * (x - p6x) / w6 / w6 - (z - p6z) * (z - p6z) / w6 / w6) * (-2 * ((x - p6x) / w6) / w6 ) + K7 * Math.exp(
-		-(x - p7x) * (x - p7x) / w7 / w7 - (z - p7z) * (z - p7z) / w7 / w7) * (-2 * ((x - p7x) / w7) / w7 ) + K8 * Math.exp(
-		-(x - p8x) * (x - p8x) / w8 / w8 - (z - p8z) * (z - p8z) / w8 / w8) * (-2 * ((x - p8x) / w8) / w8 ) ,-K1 * Math.exp(
+		-(x - p4x) * (x - p4x) / w4 / w4 - (z - p4z) * (z - p4z) / w4 / w4) * (-2 * ((x - p4x) / w4) / w4 ) ,-K1 * Math.exp(
 		-(x - p1x) * (x - p1x) / w1 / w1 - (z - p1z) * (z - p1z) / w1 / w1) * (-2 * ((z - p1z) / w1) / w1 ) - K2 * Math.exp(
 		-(x - p2x) * (x - p2x) / w2 / w2 - (z - p2z) * (z - p2z) / w2 / w2) * (-2 * ((z - p2z) / w2) / w2 ) - K3 * Math.exp(
 		-(x - p3x) * (x - p3x) / w3 / w3 - (z - p3z) * (z - p3z) / w3 / w3) * (-2 * ((z - p3z) / w3) / w3 ) - K4 * Math.exp(
-		-(x - p4x) * (x - p4x) / w4 / w4 - (z - p4z) * (z - p4z) / w4 / w4) * (-2 * ((z - p4z) / w4) / w4 ) + K5 * Math.exp(
-		-(x - p5x) * (x - p5x) / w5 / w5 - (z - p5z) * (z - p5z) / w5 / w5) * (-2 * ((z - p5z) / w5) / w5 ) + K6 * Math.exp(
-		-(x - p6x) * (x - p6x) / w6 / w6 - (z - p6z) * (z - p6z) / w6 / w6) * (-2 * ((z - p6z) / w6) / w6 ) + K7 * Math.exp(
-		-(x - p7x) * (x - p7x) / w7 / w7 - (z - p7z) * (z - p7z) / w7 / w7) * (-2 * ((z - p7z) / w7) / w7 ) + K8 * Math.exp(
-		-(x - p8x) * (x - p8x) / w8 / w8 - (z - p8z) * (z - p8z) / w8 / w8) * (-2 * ((z - p8z) / w8) / w8 )]
+		-(x - p4x) * (x - p4x) / w4 / w4 - (z - p4z) * (z - p4z) / w4 / w4) * (-2 * ((z - p4z) / w4) / w4 )]
 	}
+  
+	//class1
+	
+  let plane;
+  table1 = new THREE.Group();
+  scene.add(table1);
+  table1.updateMatrixWorld()
+  
+  
+  var loader = new THREE.TextureLoader();
+  loader.setCrossOrigin('');
+  //test light map
+  
+  //var textureTest1 = loader2.load('https://i.imgur.com/tuIeXbi.png');  
+  //var textureTest1 = loader2.load('https://i.imgur.com/PnIgpqe.png'); 漸層 
+  //var textureTest1 = loader2.load('https://i.imgur.com/D2mGAc6.png');  漸層黑底
+  //var textureTest1 = loader2.load('https://i.imgur.com/L55ESsM.png');  //漸層透明黑底
+  //var textureTest1 = loader2.load('https://i.imgur.com/FTs5YQj.png');  //漸層透明黑底縮寬度
+  textureTest = loader.load('https://i.imgur.com/FyMwBQ8.png');  //漸層透明黑底縮寬度
+  
+  
+  let material1 = new THREE.MeshBasicMaterial({
+        map: textureTest,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.8
+  });
+  let material2 = new THREE.MeshBasicMaterial({
+        color: 0x006000,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 1
+  });
+  	
+  var geometry1 = new ParametricGeometry(function(u0, v0, pos) {
+		let x = -25 + 50 * u0;
+		let z = 10 + 100 * v0;
+		pos.set(x, heightFunc(x, z), z);
+	}, 40, 40);
+	
+	var convertUV1 = function(x,z){
+	return [(x + 25) / 50,(z - 10) / 100]
+	}
+  
+  let floorL = createMultiMaterialObject(geometry1, [material2, material1]);
+   textureTest.wrapS = THREE.RepeatWrapping;
+   textureTest.wrapT = THREE.RepeatWrapping;
+   textureTest.repeat.set (1,1/5);
+   textureTest.offset.x = 0;
+   textureTest.offset.y = 2/5;
+   
+  floorL.y = 0
+  floorL.convertUV = convertUV1;
+  floorL.heightFunc = heightFunc;
+  floorL.inHeightFunc = inHeightFunc;
+  floorL.receiveShadow = true;
+  floors.push(floorL)
+
+  
+  var geometry2 = new ParametricGeometry(function(u0, v0, pos) {
+		let x = 25 + 50 * u0;
+		let z = 10 + 50 * v0;
+		pos.set(x, heightFunc(x, z), z);
+  }, 40, 40);
+  var convertUV2 = function(x,z){
+	return [(x - 25) / 50,(z - 10) / 50]
+  }
+  
+  let floorR = createMultiMaterialObject(geometry2, [material2, material1]);
+
+  floorR.receiveShadow = true;
+  floorR.y = 0
+  floorR.convertUV = convertUV2;
+  floorR.heightFunc = heightFunc;
+  floorR.inHeightFunc = inHeightFunc;
+  floors.push(floorR)
+
+  ctexture = loader.load('https://i.imgur.com/9Fh7VYy.png');
+  ctexture.wrapS = THREE.RepeatWrapping;
+  ctexture.wrapT = THREE.RepeatWrapping;
+  
+  ctexture.repeat.set (1,1/5);
+  ctexture.offset.x = 0;
+  ctexture.offset.y = 2/5;
+  
+  const localPlane = new THREE.Plane(new THREE.Vector3(0, 0 ,-1), 10.0);
+
+  let cmaterial = new THREE.MeshBasicMaterial({
+        map: ctexture,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.8,
+		clippingPlanes: [localPlane]
+  });
+  
+  var geometry3 = new ParametricGeometry(function(u0, v0, pos) {	
+		let theta = u0 * Math.PI *2;
+		let r = v0 * 50;
+		let x = 25 + r * Math.cos(theta);
+		let z = 10 + r * Math.sin(theta);
+		
+		pos.set(x, heightFunc(x, z), z);
+	},40, 40);
+  var convertUV3 = function(x,z){
+		x -= 25; 
+		z -= 10; 
+		let x2 = x * x;
+		let z2 = z * z;
+		let r = Math.sqrt(z2 + x2);
+		let u = (Math.acos(x/r)) / 2 / Math.PI;
+		let v = r / 50;
+		return [u,v]
+	}
+  let floor3 = createMultiMaterialObject(geometry3, [material2, cmaterial]);
+   
+  floor3.receiveShadow = true;
+  floor3.y = 0
+  floor3.convertUV = convertUV3;
+  floor3.heightFunc = heightFunc;
+  floor3.inHeightFunc = inHeightFunc;
+  floors.push(floor3) 
+
+  var alpha = loader.load('https://i.imgur.com/d8LnKPK.png');
+  let materialHole = new THREE.MeshBasicMaterial({color: 0x006000,side:THREE.DoubleSide,alphaMap:alpha,alphaTest: 0.5,})
+  
+  var geometry4 = new ParametricGeometry(function(u0, v0, pos) {
+		let x = 25 + 50 * u0;
+		let z = 60 + 50 * v0;
+		pos.set(x, heightFunc(x, z), z);
+  }, 40, 40);
+  var convertUV4 = function(x,z){
+	return [(x - 25) / 50,(z - 60) / 50]
+  }
+  
+  let hole1 = createMultiMaterialObject(geometry4, [materialHole, material1]);
+
+  hole1.receiveShadow = true;
+  hole1.y = 0
+  hole1.convertUV = convertUV4;
+  hole1.heightFunc = heightFunc;
+  hole1.inHeightFunc = inHeightFunc;
+  floors.push(hole1)
+  
+  var color2 = new THREE.Color();
+  color2.setHSL(1,0,0.8);
+  var box1 = new THREE.Mesh(new THREE.BoxGeometry(5,0.01,5),new THREE.MeshPhongMaterial({transparent: true,opacity:0.1}));
+  box1.position.set(0,0.2,10);
+  box1.material.color.copy(color2)
+  box1.receiveShadow = true;  
+  /*
+  circleFloor.rotation.x = -Math.PI / 2;
+  circleFloor.position.set(25,0.01,-80);
+  circleFloor.receiveShadow = true;
+
+  plane = new FinitePlane(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1), circleFloor, 100 , table1);
+  plane.update()
+  planes.push(plane);
+
+	var texture2 = loader2.load('https://i.imgur.com/AwpdGoQ.jpg');
+	texture2.wrapS = THREE.RepeatWrapping;
+	texture2.wrapT = THREE.RepeatWrapping;
+      
+	let loader3 = new THREE.TextureLoader();
+	loader3.crossOrigin = '';
+	var alpha = loader2.load('https://i.imgur.com/d8LnKPK.png');
+
+	
+
+	let materialForHole = new THREE.MeshBasicMaterial({color: 0x006000,side:THREE.DoubleSide,alphaMap:alpha,alphaTest: 0.5,})
+	
+    let hole = createMultiMaterialObject(ground, [materialForHole, material1]);
+	//let hole = new THREE.Mesh(ground,materialForHole)
+	hole.rotation.x=-Math.PI/2;  
+	hole.rotation.z=-Math.PI;  
+	hole.position.set(50,0,-5);
+	hole.receiveShadow = true;
+
+	plane = new FinitePlane(new THREE.Vector3(0, 0, 1), new THREE.Vector3(0, 0, 1),hole, 50 * 1.5, table1);
+	plane.update()
+	planes.push(plane);
+	 
+	 */
+	   var geometry3Fake = new ParametricGeometry(function(u0, v0, pos) {	
+		let theta = u0 * Math.PI *2 + Math.PI/2;
+		let r = v0 * 50;
+		let x = 25 + r * Math.cos(theta);
+		let z = 10 + r * Math.sin(theta);
+		
+		pos.set(x, heightFunc(x, z)-0.1, z);
+	},64, 64);
+
+    let floor3Fake = createMultiMaterialObject(geometry3Fake, [material2, cmaterial]);
+	
+	floor3Fake.renderOrder = 10
+	
+	let group = new THREE.Group();
+	group.add(floorL.clone(),floorR.clone(),hole1.clone(),floor3Fake,box1)
+	group.position.z = -90;
+	class1.add(group)
+	
+	//class2
 	
 	var geometry = new ParametricGeometry(function(u0, v0, pos) {
-		let x = -25 + 50 * u0;
-		let z = -325 + 200 * v0;
+		let x = -25 + 100 * u0;
+		let z = -425 + 300 * v0;
 		pos.set(x, heightFunc(x, z), z);
 	}, 40, 40);
 	
 	var loader2 = new THREE.TextureLoader();
-	loader2.setCrossOrigin('');
 
-	var textureTest1 = loader2.load('https://i.imgur.com/ktNrXbh.png');  
+	var textureTest1 = loader2.load('https://i.imgur.com/H3nFqnl.png');
+    textureTest1.wrapS = THREE.RepeatWrapping;
+	textureTest1.wrapT = THREE.RepeatWrapping;
+    textureTest1.repeat.set(1,1)	
 	
 	let materialLight1 = new THREE.MeshBasicMaterial({
         map: textureTest1,
@@ -1109,17 +907,17 @@ function buildfloors(){
 	});
 	
     let materialGround = new THREE.MeshBasicMaterial({
-        color: 0x006000,
+		map: textureTest1,
         side: THREE.DoubleSide,
         transparent: true,
         opacity: 1
     });	
 	
 	var convertUV = function(x,z){
-		return [(x + 25) / 50,(z + 325) / 200]
+		return [(x + 25) / 100,(z + 425) / 300]
 	}
 	
-	let mesh = createMultiMaterialObject(geometry, [materialGround, materialLight1]);
+	let mesh = new THREE.Mesh(geometry, materialGround);
 	mesh.y = 0
 	mesh.heightFunc = heightFunc;
 	mesh.inHeightFunc = inHeightFunc;
@@ -1127,156 +925,13 @@ function buildfloors(){
 	mesh.receiveShadow = true;
 	
 	
-	var geometry2 = new ParametricGeometry(function(u0, v0, pos) {
-		let x = 25 + 100 * u0;
-		let z = -325 + 50 * v0;
-		pos.set(x, heightFunc(x, z), z);
-	}, 40, 40);
-	var convertUV2 = function(x,z){
-		return [(x - 25) / 100,(z + 325) / 50]
-	}
-	var textureTest2 = loader2.load('https://i.imgur.com/5IvClX4.png');  
-	
-	let materialLight2 = new THREE.MeshBasicMaterial({
-        map: textureTest2,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 0.7
-	});
-	
-	let floor5 = createMultiMaterialObject(geometry2, [materialGround, materialLight2]);
-	
-	//floor5 = new THREE.Mesh(geometry2, new THREE.MeshPhongMaterial({map: texture2,side:THREE.DoubleSide}));
-	
-	floor5.receiveShadow = true;
-	floor5.y = 0;
-	floor5.heightFunc = heightFunc;
-	floor5.inHeightFunc = inHeightFunc;
-	floor5.convertUV = convertUV2;
-	
-	floors.push(mesh,floor5)
-	scene.add(mesh,floor5)
-	class2.add(mesh.clone(),floor5.clone())
-	
-	//class 3
-	
-
-	var geometry3 = new ParametricGeometry(function(u0, v0, pos) {
-		let x = 225 + 100 * u0;
-		let z = -325 + 100 * v0;
-		pos.set(x, heightFunc(x, z)+80, z);
-	}, 40, 40);
-	var convertUV3 = function(x,z){
-		return [(x - 225) / 100,(z + 325) /100]
-	}
-	
-  var textureTest3 = loader2.load('https://i.imgur.com/Gpeoj0a.png');  
-  let materialLight3 = new THREE.MeshBasicMaterial({
-        map: textureTest3,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 0.7
-  });
-	let floor4 = createMultiMaterialObject(geometry3, [materialGround, materialLight3]);
-	//var floor4 = new THREE.Mesh(geometry3, new THREE.MeshPhongMaterial({map: texture,side:THREE.DoubleSide}));
-    //floor4.material.map.repeat.set( 3, 3 );
-    floor4.y = 80;
-    floor4.receiveShadow = true;
-	floor4.heightFunc = heightFunc;
-	floor4.inHeightFunc = inHeightFunc;
-	floor4.convertUV = convertUV3;
-
-	floors.push(floor4)
-	scene.add(floor4)
-	class3.add(floor4.clone())
-	
-	
-	var geometry4 = new ParametricGeometry(function(u0, v0, pos) {
-		let x = 325 + 200 * u0;
-		let z = -300 + 50 * v0;
-		pos.set(x, heightFunc(x, z)+80, z);
-	}, 40, 40);
-	var convertUV4 = function(x,z){
-		return [(x - 325) / 200,(z + 300) /50]
-	}
-	
-	let floor6 = createMultiMaterialObject(geometry4, [materialGround, materialLight3]);
-    floor6.y = 80;
-    floor6.receiveShadow = true;
-	floor6.heightFunc = heightFunc;
-	floor6.inHeightFunc = inHeightFunc;
-	floor6.convertUV = convertUV4;
-
-	floors.push(floor6)
-	scene.add(floor6)
-	class3.add(floor6.clone())
-	
-	var geometry5 = new ParametricGeometry(function(u0, v0, pos) {
-		let x = 325 + 200 * u0;
-		let z = -250 + 50 * v0;
-		pos.set(x, heightFunc(x, z)+40, z);
-	}, 40, 40);
-	var convertUV5 = function(x,z){
-		return [(x - 325) / 200,(z + 250) /50]
-	}
-	
-	let floor7 = createMultiMaterialObject(geometry5, [materialGround, materialLight3]);
-    floor7.y = 40;
-    floor7.receiveShadow = true;
-	floor7.heightFunc = heightFunc;
-	floor7.inHeightFunc = inHeightFunc;
-	floor7.convertUV = convertUV5;
-
-	floors.push(floor7)
-	scene.add(floor7)
-	class3.add(floor7.clone())
-	
-	
-	var geometry6 = new ParametricGeometry(function(u0, v0, pos) {
-		let x = 325 + 200 * u0;
-		let z = -350 + 50 * v0;
-		pos.set(x, heightFunc(x, z)+40, z);
-	}, 40, 40);
-	var convertUV6 = function(x,z){
-		return [(x - 325) / 200,(z + 350) /50]
-	}
-	
-	let floor8 = createMultiMaterialObject(geometry6, [materialGround, materialLight3]);
-    floor8.y = 40;
-    floor8.receiveShadow = true;
-	floor8.heightFunc = heightFunc;
-	floor8.inHeightFunc = inHeightFunc;
-	floor8.convertUV = convertUV6;
-
-	floors.push(floor8)
-	scene.add(floor8)
-	class3.add(floor8.clone())
-	
-	var geometry7 = new ParametricGeometry(function(u0,v0,pos){
-		let theta = u0*Math.PI*2;
-		let r=v0*150;
-		let x=0+r*Math.cos(theta);
-		let z=250+r*Math.sin(theta);
-		pos.set(x,heightFunc(x,z)+1,z);
-	},40,40);
-	
-		
-	var convertUV7 = function(x,z){
-    let x2=x*x;
-	let z2=z*z;
-	let r =Math.sqrt(z2+x2);
-    let u =Math.acos(x/r)/2/Math.PI;
-	let v=r/150;
-	return [u,v];
-    }
-	
-	let floor9 = new THREE.Mesh(geometry7,materialGround);
-	scene.add(floor9);
-	floor9.y=1;
+	floors.push(mesh)
+	class2.add(mesh)
 	
 	
 }
 function buildArcWalls(){
+	
 	let group = new THREE.Group();
 	let material = new THREE.MeshPhongMaterial({color:0xA23400,side:THREE.DoubleSide,transparent: true,opacity: 1})
 	var arcWallC11 = new THREE.Mesh(new THREE.CylinderGeometry(48.75,48.75,5,32,32,true,Math.PI/2,Math.PI),material);
@@ -1291,18 +946,996 @@ function buildArcWalls(){
 	arcWallC12.position.set(25,2.5,-80);
 	arcWallC12.castShadow = true;
 	
-	let mesh = new THREE.Mesh(new THREE.RingGeometry( 48.75, 51.25, 32,1,0,Math.PI), material );
-	mesh.rotation.x = -Math.PI /2;
-	mesh.position.set(25,5,-80)
+	let mesh11 = new THREE.Mesh(new THREE.RingGeometry( 48.75, 51.25, 32,1,0,Math.PI), material );
+	mesh11.rotation.x = -Math.PI /2;
+	mesh11.position.set(25,5,-80)
 
-	let mesh2 = new THREE.Mesh(new THREE.RingGeometry( 48.75, 51.25, 32,1,0,Math.PI), material );
-	mesh2.rotation.x = -Math.PI /2;
-	mesh2.position.set(25,0,-80)
+	let mesh12 = new THREE.Mesh(new THREE.RingGeometry( 48.75, 51.25, 32,1,0,Math.PI), material );
+	mesh12.rotation.x = -Math.PI /2;
+	mesh12.position.set(25,0,-80)
 	
-	group.add(arcWallC11,arcWallC12,mesh,mesh2)
+	group.add(arcWallC11,arcWallC12,mesh11,mesh12)
 	arcWalls.push(group);
 	class1.add(group)
 	
+}
+function setClassVisible(level){
+	
+		class1Rotate.visible = false;
+		class2Rotate.visible = false;
+		class3Rotate.visible = false;		
+	if(level === 1) {
+		class1Rotate.visible = true;
+	}
+	else if(level === 2)
+		class2Rotate.visible = true;
+	else if(level === 3)
+		class3Rotate.visible = true;
+}
+
+function bulidMiniWorld(){
+	if(true){//floor
+		if(true){//地板
+			//大地板
+			let tempx = 300,tempz = -300;
+			var heightFunc = function(x,z) {
+				  let K1 = 5,p1x = 1000,p1z = 20,w1 = 15;
+				  return K1 * Math.exp(
+					-(x - p1x) * (x - p1x) / w1 / w1 - (z - p1z) * (z - p1z) / w1 / w1)
+				}
+			var inHeightFunc = function(x,z){
+				  let K1 = 5,p1x = 1000,p1z = 20,w1 = 15;
+					return [- K1 * Math.exp(
+					-(x - p1x) * (x - p1x) / w1 / w1 - (z - p1z) * (z - p1z) / w1 / w1) * (-2 * ((x - p1x) / w1) / w1 ),-K1 * Math.exp(
+					-(x - p1x) * (x - p1x) / w1 / w1 - (z - p1z) * (z - p1z) / w1 / w1) * (-2 * ((z - p1z) / w1) / w1 )]
+				}
+			
+			let materialGround = new THREE.MeshBasicMaterial({
+				//color: 0x006000,
+				map: new THREE.TextureLoader().load("https://i.imgur.com/IML8tcP.png"),
+				side: THREE.DoubleSide,
+				transparent: true,
+				opacity: 1
+			});	
+				
+			var groundGeometry = new ParametricGeometry(function(u0, v0, pos) {
+				let x = 150 + tempx - 65 * u0;
+				let z = 0  + tempz + 80 * v0;
+				pos.set(x, heightFunc(x, z) + 0, z);
+			}, 40, 40);
+				
+			var convertUVGround = function(x,z){
+				return [ -(x - 175 - tempx) / 165,(z + 5 - tempz) / 80]
+			}
+				
+			let ground = new THREE.Mesh(groundGeometry, materialGround);
+			ground.y = 0
+			ground.heightFunc = heightFunc;
+			ground.inHeightFunc = inHeightFunc;
+			ground.convertUV = convertUVGround;
+			ground.receiveShadow = true;
+			
+			floors.push(ground);
+
+			var groundFakeGeometry = new ParametricGeometry(function(u0, v0, pos) {
+				let x = 150 - 65 * u0;
+				let z = 0 + 80 * v0;
+				pos.set(x, heightFunc(x, z) + 0, z);
+			}, 40, 40);
+				
+			let groundFake = new THREE.Mesh(groundFakeGeometry, materialGround);
+			groundFake.receiveShadow = true;
+			
+			class3.add(groundFake)
+			//地板1
+			var geometry1 = new ParametricGeometry(function(u0, v0, pos) {
+				let x = -15 + tempx + 30 * u0;
+				let z = 0 + tempz+ 100 * v0;
+				pos.set(x, heightFunc(x, z) + 20, z);
+			}, 40, 40);
+				
+			var convertUV1 = function(x,z){
+				return [ (x + 15 - tempx) / 30,(z + 0 - tempz) / 100]
+			}
+				
+			let mesh1 = new THREE.Mesh(geometry1, materialGround);
+			mesh1.y = 20
+			mesh1.heightFunc = heightFunc;
+			mesh1.inHeightFunc = inHeightFunc;
+			mesh1.convertUV = convertUV1;
+			mesh1.receiveShadow = true;
+			
+			floors.push(mesh1);
+			//地板2
+			var geometry2 = new ParametricGeometry(function(u0, v0, pos) {
+				let x = 15 + tempx + 50 * u0;
+				let z = 70 + tempz + 30 * v0;
+				pos.set(x, heightFunc(x, z) + 20, z);
+			}, 40, 40);
+				
+			var convertUV2 = function(x,z){
+				return [ (x - 15 - tempx) / 50,(z - 70 - tempz) / 30]
+			}
+				
+			let mesh2 = new THREE.Mesh(geometry2, materialGround);
+			mesh2.y = 20
+			mesh2.heightFunc = heightFunc;
+			mesh2.inHeightFunc = inHeightFunc;
+			mesh2.convertUV = convertUV2;
+			mesh2.receiveShadow = true;
+			
+			floors.push(mesh2);
+			//地板3
+			var geometry3 = new ParametricGeometry(function(u0, v0, pos) {
+				let x = 65 + tempx + 50 * u0;
+				let z = 55 + tempz + 60 * v0;
+				pos.set(x, heightFunc(x, z) + 10, z);
+			}, 40, 40);
+				
+			var convertUV3 = function(x,z){
+				return [ (x - 65 - tempx) / 50,(z - 55 - tempz) / 60]
+			}
+				
+			let mesh3 = new THREE.Mesh(geometry3, materialGround);
+			mesh3.y = 10
+			mesh3.heightFunc = heightFunc;
+			mesh3.inHeightFunc = inHeightFunc;
+			mesh3.convertUV = convertUV3;
+			mesh3.receiveShadow = true;
+			
+			floors.push(mesh3);
+		}
+		if(true){//book
+			let book1 = buildBook();
+			let book2 = buildBook();
+			book1.position.set(0,5,0);
+			book2.position.set(0,5,50);
+
+			let book3 = buildBook();
+			book3.rotation.y = Math.PI/2;
+			book3.position.set(15,5,85);
+			class3.add(book1.clone(),book2.clone(),book3.clone())
+			book1.position.set(0,10,0);
+			book2.position.set(0,10,50);
+			book3.position.set(15,10,85);
+			class3.add(book1.clone(),book2.clone(),book3.clone())
+			book1.position.set(0,15,0);
+			book2.position.set(0,15,50);
+			book3.position.set(15,15,85);		
+			class3.add(book1.clone(),book2.clone(),book3.clone())
+			book1.position.set(0,20,0);
+			book2.position.set(0,20,50);
+			book3.position.set(15,20,85);		
+			class3.add(book1,book2,book3)
+			let book4 = buildBook();
+			let book5 = buildBook();
+			
+			book4.rotation.y = Math.PI/2;
+			book5.rotation.y = -Math.PI/2;
+			
+			book4.position.set(65,5,70);
+			book5.position.set(115,5,100);
+
+			class3.add(book4.clone(),book5.clone())		
+			
+			book4.position.set(65,10,70);
+			book5.position.set(115,10,100);
+			
+			class3.add(book4,book5)
+			
+			let book6 = buildBook();
+			book6.position.set(130,5,50);
+			book6.rotation.x = -Math.PI / 180 * 5;
+			class3.add(book6)
+			
+			let book7 = buildBook();
+			book7.rotation.x = -Math.PI / 2;
+			book7.rotation.y = -Math.PI / 2;
+			book7.position.set(165,15,100.5)
+			class3.add(book7);
+			
+			let book8 = buildBook();	
+			book8.rotation.z = Math.PI / 2;
+			book8.position.set(145,15,50)
+			class3.add(book8)
+			let book9 = buildBook();	
+			book9.rotation.z = Math.PI / 2;
+			book9.position.set(81,15,5)
+			class3.add(book9)
+			
+			
+		}
+		if(true){//ruler
+			
+			let ruler1 = buildRuler();
+			ruler1.position.set(89,15,70);
+			
+			ruler1.rotation.y = -Math.PI / 2
+			ruler1.rotation.z = Math.PI / 180 * 9
+
+			let ruler2 = buildRuler();
+			ruler2.position.set(95,15,70);
+			
+			ruler2.rotation.y = -Math.PI / 2
+			ruler2.rotation.z = Math.PI / 180 * 9
+			
+			class3.add(ruler1,ruler2);
+			
+		}
+		if(true){//鼓
+			let drum = new THREE.Group();
+			let drumBody = new THREE.Mesh(new THREE.CylinderGeometry(15,15,15,32,32),new THREE.MeshPhongMaterial({color:0xe80505,side:THREE.DoubleSide}));
+			drumBody.position.set(0,7.5,0);
+
+			let drumHead1 = new THREE.Mesh(new THREE.CircleGeometry(15,32),new THREE.MeshPhongMaterial({color:0xf5f2dc,side:THREE.DoubleSide}));
+			drumHead1.position.set(0,15.1,0);
+			drumHead1.rotation.x = -Math.PI /2
+			
+			let drumHead2 = new THREE.Mesh(new THREE.CircleGeometry(15,32),new THREE.MeshPhongMaterial({color:0xf5f2dc,side:THREE.DoubleSide}));
+			drumHead2.position.set(0,-0.1,0);
+			drumHead2.rotation.x = -Math.PI /2
+			
+			let torus = new THREE.Mesh(new THREE.TorusGeometry( 15, 0.5, 32, 100 ),new THREE.MeshPhongMaterial({color:0xb0a9a9,side:THREE.DoubleSide}));
+			torus.rotation.x = Math.PI/2
+			torus.position.y = 15;
+			let torus2 = new THREE.Mesh(new THREE.TorusGeometry( 15, 0.5, 32, 100 ),new THREE.MeshPhongMaterial({color:0xb0a9a9,side:THREE.DoubleSide}));
+			torus2.rotation.x = Math.PI/2
+			torus2.position.y = 0;
+			
+			let cylinder1 = new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.5,15,32,32),new THREE.MeshPhongMaterial({color:0xfae26b,bside:THREE.DoubleSide}));
+			let cylinder2 = new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.5,15,32,32),new THREE.MeshPhongMaterial({color:0xfae26b,bside:THREE.DoubleSide}));
+			let cylinder3 = new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.5,15,32,32),new THREE.MeshPhongMaterial({color:0xfae26b,bside:THREE.DoubleSide}));
+			let cylinder4 = new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.5,15,32,32),new THREE.MeshPhongMaterial({color:0xfae26b,bside:THREE.DoubleSide}));
+			let pos = 15 * Math.sqrt(2)/2;
+			
+			cylinder1.position.set(pos,7.5,pos)
+			cylinder2.position.set(-pos,7.5,pos)
+			cylinder3.position.set(-pos,7.5,-pos)
+			cylinder4.position.set(pos,7.5,-pos)
+			
+			let wall = new Wall(30,30,new THREE.Vector3(0,0,1),1,0xA23400,1,3)
+			wall.mesh.position.set(0,15.1,0);
+			wall.mesh.rotation.x = -Math.PI / 2;
+			level3Walls.push(wall)
+
+			drum.add(drumBody,drumHead1,drumHead2,torus,torus2,cylinder1,cylinder2,cylinder3,cylinder4,wall.mesh)
+			drum.position.set(70,10,85);
+			drum.scale.set(1/3,1/3,1/3)
+			drum.rotation.z = -Math.PI / 180 * 2
+			class3.add(drum);
+		}
+		
+	}
+	if(true){//wall
+		if(true){//鉛筆
+			let pencil1 = buildPencil();
+			let pencil2 = buildPencil();
+			pencil1.position.set(-13.5,20,0)
+			pencil2.position.set(13.5,20,0)
+			
+			let pencil3 = buildPencil();
+			let pencil4 = buildPencil();
+			pencil3.rotation.y = Math.PI / 2
+			pencil4.rotation.y = Math.PI / 2
+			pencil3.position.set(15,20,71.5)
+			pencil4.position.set(15,20,98.5)
+			
+			class3.add(pencil1,pencil2,pencil3,pencil4)
+			
+			let pencil5 = pencil3.clone();
+			let pencil6 = pencil4.clone();
+			pencil5.position.set(65,10,56.5)
+			pencil6.position.set(65,10,113.5)
+			
+			let pencil7 = buildPencil();
+			let pencil8 = pencil4.clone();
+			pencil7.position.set(148,0,0)
+			pencil8.position.set(96.5,0,3.5)
+			
+			
+			class3.add(pencil5,pencil6,pencil7,pencil8)
+			
+			let pencil9 = buildPencil();
+			pencil9.rotation.x = -Math.PI / 180 * 9
+			pencil9.position.set(96.5,12,50)
+			
+			class3.add(pencil9)
+		}
+		if(true){//橡皮
+			let eraser1 = buildEraser();
+			let eraser2 = buildEraser();
+			eraser1.rotation.x = -Math.PI/2;
+			eraser2.rotation.x = -Math.PI/2;
+			
+			eraser1.position.set(-6,23.25,3.25)
+			eraser2.position.set(6,23.25,3.25)
+			let eraser3 = eraser1.clone();
+			let eraser4 = eraser2.clone();
+			
+			eraser3.rotation.z = -Math.PI / 2;
+			eraser4.rotation.z = -Math.PI / 2;
+			eraser3.position.set(15-3.25,23.25,56)
+			eraser4.position.set(-15,23.25,56)
+			
+			let eraser5 = eraser3.clone();
+			let eraser6 = eraser4.clone();
+			
+			eraser5.position.set(15-3.25,23.25,68)
+			eraser6.position.set(-15,23.25,68)
+
+			let eraser7 = buildEraser()
+			let eraser8 = buildEraser();
+			eraser7.rotation.x = -Math.PI/2;
+			eraser8.rotation.x = -Math.PI/2;	
+			
+			eraser7.rotation.z = -Math.PI / 2;
+			eraser8.rotation.z = -Math.PI / 2;
+			
+			eraser7.position.set(65,13.25,64)
+			eraser8.position.set(115-3,13.25,64)	
+			
+			let eraser9 =  eraser7.clone();
+			let eraser10 = eraser7.clone();
+			
+			eraser9.position.set(65,13.25,106)
+			eraser10.position.set(115-3,13.25,106)	
+			
+			class3.add(eraser1,eraser2,eraser3,eraser4,eraser5,eraser6,eraser7,eraser8,eraser9,eraser10)
+			
+			let eraser11 = buildEraser();
+			eraser11.rotation.x = -Math.PI/2;
+			eraser11.position.set(8,23.25,100)
+			
+			let eraser12 = buildEraser();
+			eraser12.rotation.x = -Math.PI/2;
+			eraser12.position.set(90.5,3.25,5)	
+			
+			class3.add(eraser11,eraser12)
+			
+			let eraser13 = buildEraser();
+			eraser13.position.set(92,0,51)
+			class3.add(eraser13.clone())
+			eraser13.position.set(92,3,51)
+			class3.add(eraser13.clone())
+			eraser13.position.set(92,6,51)
+			class3.add(eraser13.clone())
+			eraser13.position.set(92,9,51)
+			class3.add(eraser13)
+			
+			let eraser14 = buildEraser();
+			eraser14.position.set(92,10,80)			
+			class3.add(eraser14.clone())
+			eraser14.position.set(92,13,80)
+			class3.add(eraser14.clone())
+			
+			smallEraser1.add(buildSmallEraser(-Math.PI/2))
+			
+			smallEraser1.position.set(63.5,20,96.5)
+			
+			smallEraser2.add(buildSmallEraser(Math.PI/2))
+			
+			smallEraser2.position.set(63.5,20,73.5)
+			class3.add(smallEraser1,smallEraser2)
+		}
+		if(true){//彎的
+		
+			let group = new THREE.Group();
+			
+			let material = new THREE.MeshBasicMaterial({map: new THREE.TextureLoader().load("https://i.imgur.com/MN5mWBg.png"),side:THREE.DoubleSide,transparent: true,opacity: 1})
+			var arcWallC11 = new THREE.Mesh(new THREE.CylinderGeometry(27,27,5,32,32,true,Math.PI/2 * 3,Math.PI/3),material);
+			arcWallC11.R = 27;
+			arcWallC11.height = 5
+			arcWallC11.position.set(15,22.5,74);
+			arcWallC11.castShadow = true;
+			arcWallC11.thetaStart = Math.PI/2 * 3;
+			arcWallC11.thetaLength = Math.PI/3;
+			
+			var arcWallC12 = new THREE.Mesh(new THREE.CylinderGeometry(30,30,5,32,32,true,Math.PI/2 * 3,Math.PI/3),material);
+			arcWallC12.position.set(15,22.5,74);
+			arcWallC12.castShadow = true;
+			
+			let mesh11 = new THREE.Mesh(new THREE.RingGeometry(27, 30, 32,1,-Math.PI,Math.PI/3), material );
+			mesh11.rotation.x = -Math.PI /2;
+			mesh11.position.set(15,25,74)
+			
+			let mesh12 = new THREE.Mesh( new THREE.RingGeometry(27, 30,32,1,-Math.PI,Math.PI/3), material );
+			mesh12.rotation.x = -Math.PI /2;
+			mesh12.position.set(15,20,74)
+			
+			group.add(arcWallC11,arcWallC12,mesh11,mesh12)
+			arcWalls.push(group);
+			class3.add(group)
+			
+		}
+		if(true){//碰撞
+			
+			let wall1 = new Wall(30,6,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall1.mesh.position.set(0,23,3)
+			level3Walls.push(wall1)
+			class3.add(wall1.mesh)
+			
+			let wall2 = new Wall(74,6,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall2.mesh.rotation.y = Math.PI / 2;
+			wall2.mesh.position.set(-12,23,37)
+			level3Walls.push(wall2)
+			class3.add(wall2.mesh)
+			let wall3 = new Wall(74,6,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall3.mesh.rotation.y = -Math.PI / 2;
+			wall3.mesh.position.set(12,23,37)
+			level3Walls.push(wall3)
+			class3.add(wall3.mesh)
+			
+			let wall4 = new Wall(65,6,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall4.mesh.rotation.y = -Math.PI;
+			wall4.mesh.position.set(32.5,23,97)
+			level3Walls.push(wall4)
+			class3.add(wall4.mesh)
+			
+			let wall5 = new Wall(50,6,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall5.mesh.position.set(40,23,73)
+			level3Walls.push(wall5)
+			class3.add(wall5.mesh)
+			
+			let wall6 = new Wall(3,6,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall6.mesh.position.set(13.5,23,74)
+			level3Walls.push(wall6)
+			class3.add(wall6.mesh)
+			
+			let wall7 = new Wall(30,4,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall7.mesh.rotation.y = Math.PI / 2;
+			wall7.mesh.position.set(65,12,85)
+			level3Walls.push(wall7)
+			class3.add(wall7.mesh)
+			///時間性的 上方
+			let wall8 = new Wall(3,6,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall8.mesh.rotation.y = Math.PI;
+			wall8.mesh.position.set(66.5,13,100)
+			level3Walls.push(wall8)
+			class3.add(wall8.mesh)
+
+			let wall9 = new Wall(50,5,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall9.mesh.rotation.y = Math.PI;
+			wall9.mesh.position.set(90,12.5,112)
+			level3Walls.push(wall9)
+			class3.add(wall9.mesh)
+
+			let wall10 = new Wall(3,6,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall10.mesh.rotation.y = Math.PI;
+			wall10.mesh.position.set(113.5,13,100)
+			level3Walls.push(wall10)
+			class3.add(wall10.mesh)
+			
+			let wall11 = new Wall(12,6,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall11.mesh.rotation.y = Math.PI / 2;
+			wall11.mesh.position.set(68,13,106)
+			level3Walls.push(wall11)
+			class3.add(wall11.mesh)
+			
+			let wall12 = new Wall(12,6,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall12.mesh.rotation.y = -Math.PI / 2;
+			wall12.mesh.position.set(112,13,106)
+			level3Walls.push(wall12)
+			class3.add(wall12.mesh)	
+			
+			///時間性的 下方
+			
+			let wall13 = new Wall(3,6,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall13.mesh.position.set(66.5,13,70)
+			level3Walls.push(wall13)
+			class3.add(wall13.mesh)
+
+			let wall14 = new Wall(50,2,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall14.mesh.position.set(90,11,58)
+			level3Walls.push(wall14)
+			class3.add(wall14.mesh)
+
+			let wall15 = new Wall(3,6,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall15.mesh.position.set(113.5,13,70)
+			level3Walls.push(wall15)
+			class3.add(wall15.mesh)
+			
+			let wall16 = new Wall(12,6,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall16.mesh.rotation.y = Math.PI / 2;
+			wall16.mesh.position.set(68,13,64)
+			level3Walls.push(wall16)
+			class3.add(wall16.mesh)
+			
+			let wall17 = new Wall(12,6,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall17.mesh.rotation.y = -Math.PI / 2;
+			wall17.mesh.position.set(112,13,64)
+			level3Walls.push(wall17)
+			class3.add(wall17.mesh)
+			
+			//轉動橡皮
+			
+			let wall18 = new Wall(10,5,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall18.mesh.rotation.y = -Math.PI /2
+			wall18.mesh.position.set(-1.5,2.5,-5.75);
+			smallEraser1.add(wall18.mesh)
+			level3Walls.push(wall18)
+			
+			let wall19 = new Wall(10,5,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall19.mesh.rotation.y = -Math.PI/2
+			wall19.mesh.position.set(-1.5,2.5,5.75);
+			smallEraser2.add(wall19.mesh)
+			level3Walls.push(wall19)
+			
+			let wall20 = new Wall(3,5,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall20.mesh.rotation.y = Math.PI;
+			wall20.mesh.position.set(0,2.5,-11);
+			smallEraser1.add(wall20.mesh)
+			level3Walls.push(wall20)
+			
+			let wall21 = new Wall(3,5,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall21.mesh.position.set(0,2.5,11);
+			smallEraser2.add(wall21.mesh)
+			level3Walls.push(wall21)
+
+			let wall22 = new Wall(10,5,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall22.mesh.rotation.y = Math.PI /2
+			wall22.mesh.position.set(1.5,2.5,-5.75);
+			smallEraser1.add(wall22.mesh)
+			level3Walls.push(wall22)
+			
+			let wall23 = new Wall(10,5,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall23.mesh.rotation.y = Math.PI/2
+			wall23.mesh.position.set(1.5,2.5,5.75);
+			smallEraser2.add(wall23.mesh)
+			level3Walls.push(wall23)
+			
+			//尺相關判定
+
+			let wall24 = new Wall(40,12,new THREE.Vector3(0,0,1),1,0xA23400,2.5,0.2)
+			wall24.mesh.rotation.order = 'XZY'
+			wall24.mesh.rotation.x = -Math.PI / 180 * 90
+			wall24.mesh.rotation.z = Math.PI / 180 * 90
+			wall24.mesh.rotation.y = Math.PI / 180 * 9
+			wall24.mesh.position.set(92,15.1,70);
+			class3.add(wall24.mesh);
+			level3Walls.push(wall24)
+			
+			let wall25 = new Wall(50,2,new THREE.Vector3(0,0,1),1,0xA23400,2.5,0.1)
+			wall25.mesh.rotation.y = -Math.PI / 180 * 90
+			wall25.mesh.rotation.z = Math.PI / 180 * 9
+			wall25.mesh.position.set(95,16.6,75);
+			level3Walls.push(wall25)
+			class3.add(wall25.mesh);
+			
+			let wall26 = new Wall(50,1.7,new THREE.Vector3(0,0,1),1,0xA23400,2.5,0.1)
+			wall26.mesh.rotation.order = 'YZX'
+			wall26.mesh.rotation.y = -Math.PI / 180 * 90
+			wall26.mesh.rotation.z = Math.PI / 180 * 9
+			wall26.mesh.rotation.x = -Math.PI / 180 * 30
+			wall26.mesh.position.set(95.4,18.2,75);
+			level3Walls.push(wall26)
+			class3.add(wall26.mesh);
+
+			let wall261 = new Wall(1.7,50,new THREE.Vector3(0,0,1),1,0xA23400,2.5,0.1)
+			wall261.mesh.rotation.x = -Math.PI / 180 * 99
+			wall261.mesh.position.set(96.5,18.8,75);
+			level3Walls.push(wall261)
+			class3.add(wall261.mesh);
+			
+			//橡皮擦柱子	
+			
+			let wall27 = new Wall(6.5,5.9,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall27.mesh.rotation.y = -Math.PI / 180 * 90
+			wall27.mesh.position.set(86,13,80);
+			level3Walls.push(wall27)
+			class3.add(wall27.mesh);
+			let wall28 = new Wall(6.5,5.9,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall28.mesh.rotation.y = Math.PI/2
+			wall28.mesh.position.set(98,13,80);
+			level3Walls.push(wall28)
+			class3.add(wall28.mesh);
+
+			let wall29 = new Wall(12,5.9,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall29.mesh.position.set(92,13,83.25);
+			level3Walls.push(wall29)
+			class3.add(wall29.mesh);
+			let wall30 = new Wall(12,5.9,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall30.mesh.rotation.y = -Math.PI
+			wall30.mesh.position.set(92,13,76.75);
+			level3Walls.push(wall30)
+			class3.add(wall30.mesh);
+			
+			let wall31 = new Wall(12,6.5,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall31.mesh.rotation.x = -Math.PI / 180 * 90
+			wall31.mesh.position.set(92,16,80);
+			level3Walls.push(wall31)
+			class3.add(wall31.mesh);
+
+			let wall32 = new Wall(6.5,11.9,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall32.mesh.rotation.y = -Math.PI / 180 * 90
+			wall32.mesh.position.set(86,6,51);
+			level3Walls.push(wall32)
+			class3.add(wall32.mesh);
+			let wall33 = new Wall(6.5,12,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall33.mesh.rotation.y = Math.PI/2
+			wall33.mesh.position.set(98,6,51);
+			level3Walls.push(wall33)
+			class3.add(wall33.mesh);
+
+			let wall34 = new Wall(12,12,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall34.mesh.position.set(92,6,54.25);
+			level3Walls.push(wall34)
+			class3.add(wall34.mesh);
+			let wall35 = new Wall(12,12,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall35.mesh.rotation.y = -Math.PI
+			wall35.mesh.position.set(92,6,47.75);
+			level3Walls.push(wall35)
+			class3.add(wall35.mesh);
+			
+			let wall36 = new Wall(12,6.5,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall36.mesh.rotation.x = -Math.PI / 180 * 90
+			wall36.mesh.position.set(92,12,51);
+			class3.add(wall36.mesh);
+			level3Walls.push(wall36)
+			
+			///書斜坡
+			let wall37 = new Wall(50,30,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall37.mesh.rotation.y = Math.PI;
+			wall37.mesh.position.set(140,15,100.5);
+			level3Walls.push(wall37)
+			class3.add(wall37.mesh)
+			
+			let wall38 = new Wall(50,30,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall38.mesh.rotation.y = -Math.PI / 2;
+			wall38.mesh.position.set(145,15,75);
+			level3Walls.push(wall38)
+			class3.add(wall38.mesh)	
+			
+			let wall39 = new Wall(30,50,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall39.mesh.rotation.x = -Math.PI / 180 * 95;	
+			wall39.mesh.position.set(130,7.2,75);
+			level3Walls.push(wall39)
+			class3.add(wall39.mesh)	
+			
+			//塗鴉
+			let wall40 = new Wall(50,5,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall40.mesh.rotation.y = -Math.PI;
+			wall40.mesh.position.set(90,2.5,55);
+			level3Walls.push(wall40)
+			class3.add(wall40.mesh)
+			
+			let wall42 = new Wall(50,3,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall42.mesh.rotation.y = -Math.PI / 2;
+			wall42.mesh.position.set(146.5,1.5,25);
+			level3Walls.push(wall42)
+			class3.add(wall42.mesh)	
+
+			let wall43 = new Wall(50,30,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall43.mesh.rotation.y = Math.PI / 2;
+			wall43.mesh.position.set(86,15,30);
+			level3Walls.push(wall43)
+			class3.add(wall43.mesh)
+			
+			let wall44 = new Wall(65,5,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall44.mesh.position.set(115,2.5,5);
+			level3Walls.push(wall44)
+			class3.add(wall44.mesh)
+			
+			
+			let wall45 = new Wall(30,4,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall45.mesh.rotation.x = -Math.PI / 180 * 5;
+			wall45.mesh.rotation.y = Math.PI;
+			wall45.mesh.position.set(130,2,50.4);
+			level3Walls.push(wall45)
+			class3.add(wall45.mesh)	
+
+			let wall46 = new Wall(6,4,new THREE.Vector3(0,0,1),1,0xA23400)
+			wall46.mesh.rotation.y = -Math.PI / 2;
+			wall46.mesh.position.set(115,2,53.4);
+			
+			level3Walls.push(wall46)
+			class3.add(wall46.mesh)	
+			
+			for(let k = 0; k < level3Walls.length;k++){
+				level3Walls[k].mesh.visible = false;
+			}
+		}
+		if(true){//按鈕
+			//let texture = new THREE.TextureLoader().load('https://i.imgur.com/cwu54BH.png')
+			pressButton = new THREE.Mesh(new THREE.SphereGeometry(2.5,32,32,0,Math.PI * 2,0,Math.PI/ 4),new THREE.MeshBasicMaterial({color:"red"}))
+			pressButton.rotation.x = -Math.PI / 2
+			pressButton.rotation.z = -Math.PI / 180 * 48
+			pressButton.position.set(-9,21.6,90)
+			class3.add(pressButton)
+		}
+	}
+}
+function buildEraser(){
+	let group = new THREE.Group();
+	
+	let body = new THREE.Mesh(new THREE.BoxGeometry(24,5,12), new THREE.MeshBasicMaterial({color:0xdedcdc}))
+	//body.position.x = 2
+	
+	let mesh1 = new THREE.Mesh(new THREE.BoxGeometry(15,2.5,5), new THREE.MeshBasicMaterial({color:"blue"}))
+	mesh1.position.set(-4.49,1.75,4)
+	let mesh2 = new THREE.Mesh(new THREE.BoxGeometry(15,2.5,3), new THREE.MeshBasicMaterial({color:"white"}))
+	mesh2.position.set(-4.49,1.75,0)
+	let mesh3 = new THREE.Mesh(new THREE.BoxGeometry(15,2.5,5), new THREE.MeshBasicMaterial({color:"black"}))
+	mesh3.position.set(-4.49,1.75,-4)
+	
+	let mesh4 = new THREE.Mesh(new THREE.BoxGeometry(15,1,5), new THREE.MeshBasicMaterial({color:"white"}))
+	mesh4.position.set(-4.49,0,4)
+	let mesh5 = new THREE.Mesh(new THREE.BoxGeometry(15,1,5), new THREE.MeshBasicMaterial({color:"white"}))
+	mesh5.position.set(-4.49,0,-4)
+	
+	let mesh6 = new THREE.Mesh(new THREE.BoxGeometry(15,2.5,5), new THREE.MeshBasicMaterial({color:"blue"}))
+	mesh6.position.set(-4.49,-1.75,-4)
+	let mesh7 = new THREE.Mesh(new THREE.BoxGeometry(15,2.5,3), new THREE.MeshBasicMaterial({color:"white"}))
+	mesh7.position.set(-4.49,-1.75,0)
+	let mesh8 = new THREE.Mesh(new THREE.BoxGeometry(15,2.5,5), new THREE.MeshBasicMaterial({color:"black"}))
+	mesh8.position.set(-4.49,-1.75,4)	
+	
+	let mesh9 = new THREE.Mesh(new THREE.BoxGeometry(15,2.5,5), new THREE.MeshBasicMaterial({color:"black"}))
+	mesh9.position.set(-4.49,1.75,-4)
+
+	group.add(body,mesh1,mesh2,mesh3,mesh4,mesh5,mesh6,mesh7,mesh8)
+	group.position.set(0,1.5,0)
+	group.scale.set(0.5,0.5,0.5)
+	
+	
+	let groupAll = new THREE.Group();
+	groupAll.add(group);
+	return groupAll
+}
+function buildSmallEraser(zAngle){
+	let group = new THREE.Group();
+	
+	let body = new THREE.Mesh(new THREE.BoxGeometry(24,5,12), new THREE.MeshBasicMaterial({color:0xdedcdc}))
+	//body.position.x = 2
+	
+	let mesh1 = new THREE.Mesh(new THREE.BoxGeometry(15,2.5,5), new THREE.MeshBasicMaterial({color:"red"}))
+	mesh1.position.set(-4.49,1.75,4)
+	let mesh2 = new THREE.Mesh(new THREE.BoxGeometry(15,2.5,3), new THREE.MeshBasicMaterial({color:"white"}))
+	mesh2.position.set(-4.49,1.75,0)
+	let mesh3 = new THREE.Mesh(new THREE.BoxGeometry(15,2.5,5), new THREE.MeshBasicMaterial({color:"red"}))
+	mesh3.position.set(-4.49,1.75,-4)
+	
+	let mesh4 = new THREE.Mesh(new THREE.BoxGeometry(15,1,5), new THREE.MeshBasicMaterial({color:"white"}))
+	mesh4.position.set(-4.49,0,4)
+	let mesh5 = new THREE.Mesh(new THREE.BoxGeometry(15,1,5), new THREE.MeshBasicMaterial({color:"white"}))
+	mesh5.position.set(-4.49,0,-4)
+	
+	let mesh6 = new THREE.Mesh(new THREE.BoxGeometry(15,2.5,5), new THREE.MeshBasicMaterial({color:"red"}))
+	mesh6.position.set(-4.49,-1.75,-4)
+	let mesh7 = new THREE.Mesh(new THREE.BoxGeometry(15,2.5,3), new THREE.MeshBasicMaterial({color:"white"}))
+	mesh7.position.set(-4.49,-1.75,0)
+	let mesh8 = new THREE.Mesh(new THREE.BoxGeometry(15,2.5,5), new THREE.MeshBasicMaterial({color:"red"}))
+	mesh8.position.set(-4.49,-1.75,4)	
+	
+	let mesh9 = new THREE.Mesh(new THREE.BoxGeometry(15,2.5,5), new THREE.MeshBasicMaterial({color:"red"}))
+	mesh9.position.set(-4.49,1.75,-4)
+
+	group.add(body,mesh1,mesh2,mesh3,mesh4,mesh5,mesh6,mesh7,mesh8)
+	if(zAngle <= 0){
+		group.position.set(0,3.25,-6)
+		group.rotation.z = zAngle
+	}
+	else{
+		group.position.set(0,3.25,6)
+		group.rotation.z = zAngle
+	}
+	
+	//group.position.set(0,3.25,-6)
+	group.scale.set(0.4,0.5,0.5)
+	group.rotation.x = Math.PI/2
+	//group.rotation.z = -Math.PI/2
+	
+	let groupAll = new THREE.Group();
+	groupAll.add(group);
+	return groupAll
+}
+function buildPencil(){
+	let group = new THREE.Group();
+	
+	let body = new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.5,45,6),new THREE.MeshBasicMaterial({color : 0xffc933}))
+	let alu = new THREE.Mesh(new THREE.CylinderGeometry(1.6,1.6,2,32),new THREE.MeshBasicMaterial({color : 0x94938f}))
+	let eraser = new THREE.Mesh(new THREE.CylinderGeometry(1.3,1.3,3,32),new THREE.MeshBasicMaterial({color : 0xd92b25}))
+	
+	let brown = new THREE.Mesh(new THREE.CylinderGeometry(1.2,1.2,45.01,32),new THREE.MeshBasicMaterial({color : 0xb37f4f}))
+	let black = new THREE.Mesh(new THREE.CylinderGeometry(0.5,0.5,45.02,32),new THREE.MeshBasicMaterial({color : 0x1c1c1b}))
+	body.rotation.x = -Math.PI/2
+	body.rotation.y = Math.PI / 180 * 90
+	
+	alu.rotation.x = -Math.PI / 2
+	alu.position.z = 23.5;
+	
+	eraser.rotation.x = -Math.PI / 2
+	eraser.position.z = 26;
+	
+	brown.rotation.x = -Math.PI/2
+	black.rotation.x = -Math.PI/2
+	group.add(body,alu,eraser,brown,black)
+	group.position.set(0,1.5,22.5)
+	let groupall = new THREE.Group();
+	groupall.add(group)
+	return groupall
+	
+}
+function buildBook(){
+	let group = new THREE.Group();
+	
+	let loader = new THREE.TextureLoader();
+	let matArray = [];
+	matArray.push(new THREE.MeshBasicMaterial({map : loader.load("https://i.imgur.com/VqZfkMV.jpg")}))
+	matArray.push(new THREE.MeshBasicMaterial({map : loader.load("https://i.imgur.com/VqZfkMV.jpg")}))
+	matArray.push(new THREE.MeshBasicMaterial({map : loader.load("https://i.imgur.com/5I081NU.png")}))
+	matArray.push(new THREE.MeshBasicMaterial({map : loader.load("https://i.imgur.com/fgQf5yr.png")}))
+	matArray.push(new THREE.MeshBasicMaterial({map : loader.load("https://i.imgur.com/VqZfkMV.jpg")}))
+	matArray.push(new THREE.MeshBasicMaterial({map : loader.load("https://i.imgur.com/ZausXxX.png")}))
+	let box = new THREE.Mesh(new THREE.BoxGeometry(50,5,30),matArray);
+	box.rotation.y = -Math.PI/2
+	box.position.set(0,-2.5,25);
+	group.add(box)
+	return group;
+	
+}
+function buildRuler(){
+	let group = new THREE.Group();
+	let texture = new THREE.TextureLoader().load("https://i.imgur.com/m648HMn.png")
+	let body = new THREE.Mesh(new THREE.BoxGeometry(40,0.1,6),new THREE.MeshBasicMaterial({map:texture,alphaTest:0.5,side:THREE.DoubleSide}))
+	body.position.set(0,0.05,0)
+	group.add(body)
+	return group
+
+}
+function buildFan(){
+	let group = new THREE.Group();
+	
+	var cylinder=new THREE.Mesh(new THREE.CylinderGeometry(5,5,20,32),new THREE.MeshPhongMaterial());
+	cylinder.position.set(0,20,0)
+
+	var cylinder2=new THREE.Mesh(new THREE.CylinderGeometry(7.5,7.5,10,32),new THREE.MeshPhongMaterial());
+	cylinder2.position.set(0,35,0)
+	cylinder2.rotation.x=Math.PI/2
+
+	var sphere=new THREE.Mesh(new THREE.SphereGeometry(2,32,16),new THREE.MeshPhongMaterial({color:'blue'}));
+	sphere.position.set(0,35,7);
+	
+	group.add(cylinder,cylinder2,sphere);
+	
+	var box = new THREE.Mesh(new THREE.BoxGeometry(5,30,0.5),new THREE.MeshPhongMaterial({color:'red'}));
+	box.position.set(0,-15,7); 
+	var box2 = new THREE.Mesh(new THREE.BoxGeometry(5,30,0.5),new THREE.MeshPhongMaterial({color:'red'}));
+	box2.position.set(0,15,7); 
+	var box3 = new THREE.Mesh(new THREE.BoxGeometry(5,30,0.5),new THREE.MeshPhongMaterial({color:'red'}));
+	box3.rotation.z=Math.PI/2
+	box3.position.set(15,0,7); 
+	var box4 = new THREE.Mesh(new THREE.BoxGeometry(5,30,0.5),new THREE.MeshPhongMaterial({color:'red'}));
+	box4.position.set(-15,0,7); 
+	box4.rotation.z=-Math.PI/2
+	
+	boxg.add(box,box2,box3,box4);
+	boxg.position.set(0,35,0);
+	group.add(boxg)
+	
+	let stand1 = new THREE.Mesh(new THREE.BoxGeometry(20,2.5,10),new THREE.MeshPhongMaterial());
+	stand1.position.set(0,8.75,0)
+	
+	let stand2 = new THREE.Mesh(new THREE.BoxGeometry(7,2.5,10),new THREE.MeshPhongMaterial());
+	stand2.position.set(-6.5,6.25,0)
+	
+	let stand3 = new THREE.Mesh(new THREE.BoxGeometry(7,2.5,10),new THREE.MeshPhongMaterial());
+	stand3.position.set(6.5,6.25,0)
+	
+	let stand4 = new THREE.Mesh(new THREE.BoxGeometry(37.5,5,7.5),new THREE.MeshPhongMaterial());
+	stand4.position.set(0,2.5,8.75)
+	
+	let stand5 = new THREE.Mesh(new THREE.BoxGeometry(15.25,5,17.5),new THREE.MeshPhongMaterial());
+	stand5.position.set(10.625,2.5,-3.75)
+	
+	let stand6 = new THREE.Mesh(new THREE.BoxGeometry(15.25,5,17.5),new THREE.MeshPhongMaterial());
+	stand6.position.set(-10.625,2.5,-3.75)
+	
+	let plane = new THREE.Mesh(new THREE.PlaneGeometry(6,17.5),new THREE.MeshPhongMaterial())
+	plane.position.set(0,2.5,-3.4)
+	plane.rotation.x = Math.PI /180 * 73
+	
+	group.add(stand1,stand2,stand3,stand4,stand5,stand6,plane)
+	group.rotation.y = -Math.PI / 2
+	
+	return group
+}
+function buildNewtonCradle(){
+	let group = new THREE.Group();
+	let box = new THREE.Mesh(new THREE.BoxGeometry(20,2,18),new THREE.MeshNormalMaterial())
+	box.position.set(0,1,0)
+	
+	let group2 = new THREE.Group();
+	let sphere = new THREE.Mesh(new THREE.SphereGeometry(1,32),new THREE.MeshNormalMaterial())
+	sphere.position.set(0,-10.4,0)
+
+	let cylinder = new THREE.Mesh(new THREE.CylinderGeometry(0.25,0.25,0.125,32,32),new THREE.MeshNormalMaterial())
+	cylinder.position.set(0,-9.4,0)
+	let line1 = new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,10),new THREE.MeshNormalMaterial());
+	line1.position.set(1.75,9,0)
+	line1.position.y = -4.7
+	line1.rotation.z = -Math.PI / 180 * 20
+
+	let line2 = new THREE.Mesh(new THREE.CylinderGeometry(0.02,0.02,10),new THREE.MeshNormalMaterial());
+	line2.position.set(-1.75,9,0)
+	line2.position.y = -4.7
+	line2.rotation.z = Math.PI / 180 * 20
+	group2.add(sphere,cylinder,line1,line2)
+	group2.position.y = 13.5;
+	
+	return group2;
+
+}
+function stand(){
+	let group = new THREE.Group();
+	let group1 = new THREE.Group();
+	
+	let cylinder = new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.3,10,32,32),new THREE.MeshNormalMaterial())
+	cylinder.rotation.x = Math.PI/2
+	cylinder.rotation.y = Math.PI/2
+	cylinder.position.set(0,0,0)
+	
+	let torus1 = new THREE.Mesh(new THREE.TorusGeometry( 0.302, 0.02, 16, 100 ),new THREE.MeshNormalMaterial())
+	torus1.position.z = 1
+	
+	let torus2 = new THREE.Mesh(new THREE.TorusGeometry( 0.302, 0.02, 16, 100 ),new THREE.MeshNormalMaterial())
+	torus2.position.z = -1
+	
+	group1.add(cylinder,torus1,torus2)
+	group1.position.set(3.56,11.8,0)
+	
+	group.add(group1.clone())
+	group1.position.set(-3.56,11.8,0)
+	group.add(group1)
+	
+	let group2 = new THREE.Group();
+	let torus11 = new THREE.Mesh(new THREE.TorusGeometry( 0.302, 0.02, 16, 100 ),new THREE.MeshNormalMaterial())
+	torus11.position.z = 3
+	
+	let torus22 = new THREE.Mesh(new THREE.TorusGeometry( 0.302, 0.02, 16, 100 ),new THREE.MeshNormalMaterial())
+	torus22.position.z = -3
+	
+	group2.add(torus11,torus22)
+	group2.position.set(3.56,11.8,0)
+	
+	group.add(group2.clone())
+	group2.position.set(-3.56,11.8,0)
+	group.add(group2)
+	
+	
+	let torus3 = new THREE.Mesh(new THREE.TorusGeometry( 0.3, 0.3, 32, 100,Math.PI / 2),new THREE.MeshNormalMaterial())
+	torus3.position.set(-3.56,11.5,-5)
+	torus3.rotation.y = -Math.PI / 2
+	torus3.rotation.z = Math.PI / 2
+	group.add(torus3.clone())
+	torus3.position.set(3.56,11.5,-5)
+	group.add(torus3.clone())
+	torus3.rotation.y = 0
+	torus3.rotation.y = Math.PI / 2
+	torus3.position.set(3.56,11.5,5)
+	group.add(torus3.clone())
+	torus3.position.set(-3.56,11.5,5)
+	group.add(torus3.clone())
+	
+	let cylinder2 = new THREE.Mesh(new THREE.CylinderGeometry(0.3,0.3,12,32,32),new THREE.MeshNormalMaterial());
+	cylinder2.position.set(3.56,5.5,5.3)
+	group.add(cylinder2.clone())
+	
+	cylinder2.position.set(-3.56,5.5,5.3)
+	group.add(cylinder2.clone())
+	
+	cylinder2.position.set(3.56,5.5,-5.3)
+	group.add(cylinder2.clone())
+	
+	cylinder2.position.set(-3.56,5.5,-5.3)
+	group.add(cylinder2.clone())
+	
+	let box = new THREE.Mesh(new THREE.BoxGeometry(10,2,15),new THREE.MeshNormalMaterial());
+	box.position.y = -1
+	group.add(box)
+	let groupAll = new THREE.Group();
+	group.position.y = 2;
+	groupAll.add(group);
+	return groupAll;
 	
 }
 function buildGoal(){
@@ -1324,33 +1957,33 @@ function buildGoal(){
     alphaTest: 0.5,
     side:THREE.DoubleSide
   });
-  var net = new THREE.Mesh(new THREE.PlaneGeometry(60, 55), texMat);
-  net.position.set(0,0,-30)
+  var net = new THREE.Mesh(new THREE.PlaneGeometry(30, 27.5), texMat);
+  net.position.set(0,0,-15)
   net.rotation.x=Math.PI/8;
-  var net2 = new THREE.Mesh(new THREE.PlaneGeometry(60, 20), texMat2);
-  net2.position.set(0,25,-10)
+  var net2 = new THREE.Mesh(new THREE.PlaneGeometry(30, 20), texMat2);
+  net2.position.set(0,12.5,-10)
   net2.rotation.x=Math.PI/2;
-  var pole=new THREE.Mesh(new THREE.CylinderGeometry(2,2,50,32),new THREE.MeshPhongMaterial({color:0xffffff}));
-  pole.position.set(30,0,0);
-  var pole2=new THREE.Mesh(new THREE.CylinderGeometry(2,2,50,32),new THREE.MeshPhongMaterial({color:0xffffff}));
-  pole2.position.set(-30,0,0);
-  var pole3=new THREE.Mesh(new THREE.CylinderGeometry(2,2,60,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  var pole=new THREE.Mesh(new THREE.CylinderGeometry(2,2,25,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole.position.set(17,0,0);
+  var pole2=new THREE.Mesh(new THREE.CylinderGeometry(2,2,25,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole2.position.set(-17,0,0);
+  var pole3=new THREE.Mesh(new THREE.CylinderGeometry(2,2,34,32),new THREE.MeshPhongMaterial({color:0xffffff}));
   pole3.rotation.z=Math.PI/2;
-  pole3.position.set(0,25,0);
-  var pole4=new THREE.Mesh(new THREE.CylinderGeometry(2,2,60,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole3.position.set(0,12.5,0);
+  var pole4=new THREE.Mesh(new THREE.CylinderGeometry(2,2,34,32),new THREE.MeshPhongMaterial({color:0xffffff}));
   pole4.rotation.z=Math.PI/2;
-  pole4.position.set(0,25,-20);
-  var pole5=new THREE.Mesh(new THREE.CylinderGeometry(2,2,20,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole4.position.set(0,12.5,-10);
+  var pole5=new THREE.Mesh(new THREE.CylinderGeometry(2,2,10,32),new THREE.MeshPhongMaterial({color:0xffffff}));
   pole5.rotation.x=Math.PI/2;
-  pole5.position.set(30,25,-10);
-  var pole6=new THREE.Mesh(new THREE.CylinderGeometry(2,2,20,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole5.position.set(17,12.5,-5);
+  var pole6=new THREE.Mesh(new THREE.CylinderGeometry(2,2,10,32),new THREE.MeshPhongMaterial({color:0xffffff}));
   pole6.rotation.x=Math.PI/2;
-  pole6.position.set(-30,25,-10);
-  var pole7=new THREE.Mesh(new THREE.CylinderGeometry(2,2,55,32),new THREE.MeshPhongMaterial({color:0xffffff}));
-  pole7.position.set(30,0,-30);
+  pole6.position.set(-17,12.5,-5);
+  var pole7=new THREE.Mesh(new THREE.CylinderGeometry(2,2,27.5,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole7.position.set(17,0,-15);
   pole7.rotation.x=Math.PI/8
-  var pole8=new THREE.Mesh(new THREE.CylinderGeometry(2,2,55,32),new THREE.MeshPhongMaterial({color:0xffffff}));
-  pole8.position.set(-30,0,-30);
+  var pole8=new THREE.Mesh(new THREE.CylinderGeometry(2,2,27.5,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole8.position.set(-17,0,-15);
   pole8.rotation.x=Math.PI/8
   
   var uvs = new Float32Array( quad_uvs);
@@ -1359,7 +1992,7 @@ function buildGoal(){
   var indices = [];
   var vertices = [];
   
-  vertices.push(0,0,0, 20,0,0, 40,-50,0, 0,-50,0);
+  vertices.push(0,0,0, 10,0,0, 20,-25,0, 0,-25,0);
   indices.push(3, 0, 1, 1, 2, 3);
   
 	geometry.setIndex(indices);
@@ -1373,557 +2006,59 @@ function buildGoal(){
   });
 	let pointer = new THREE.Mesh(geometry,material);
   pointer.rotation.y=Math.PI/2;
-  pointer.position.set(30,25,0)
+  pointer.position.set(17,12.5,0)
   let pointer2 = new THREE.Mesh(geometry,material);
   pointer2.rotation.y=Math.PI/2;
-  pointer2.position.set(-30,25,0)
+  pointer2.position.set(-17,12.5,0)
   var goal=new THREE.Group();
   goal.add(pointer2,pointer,pole,pole2,pole3,pole4,pole5,pole6,pole7,pole8,net,net2);
   scene.add(goal);
-  goal.rotation.y=-Math.PI/2;
-  goal.position.set(140,22,-300)
+  goal.position.set(25,11,-425)
+  class2.add(goal)
+  
+  var net3 = new THREE.Mesh(new THREE.PlaneGeometry(30, 27.5), texMat);
+  net3.position.set(0,0,-15)
+  net3.rotation.x=Math.PI/8;
+  var net4 = new THREE.Mesh(new THREE.PlaneGeometry(30, 20), texMat2);
+  net4.position.set(0,12.5,-10)
+  net4.rotation.x=Math.PI/2;
+  var pole9=new THREE.Mesh(new THREE.CylinderGeometry(2,2,25,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole9.position.set(17,0,0);
+  var pole10=new THREE.Mesh(new THREE.CylinderGeometry(2,2,25,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole10.position.set(-17,0,0);
+  var pole11=new THREE.Mesh(new THREE.CylinderGeometry(2,2,34,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole11.rotation.z=Math.PI/2;
+  pole11.position.set(0,12.5,0);
+  var pole12=new THREE.Mesh(new THREE.CylinderGeometry(2,2,34,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole12.rotation.z=Math.PI/2;
+  pole12.position.set(0,12.5,-10);
+  var pole13=new THREE.Mesh(new THREE.CylinderGeometry(2,2,10,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole13.rotation.x=Math.PI/2;
+  pole13.position.set(17,12.5,-5);
+  var pole14=new THREE.Mesh(new THREE.CylinderGeometry(2,2,10,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole14.rotation.x=Math.PI/2;
+  pole14.position.set(-17,12.5,-5);
+  var pole15=new THREE.Mesh(new THREE.CylinderGeometry(2,2,27.5,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole15.position.set(17,0,-15);
+  pole15.rotation.x=Math.PI/8
+  var pole16=new THREE.Mesh(new THREE.CylinderGeometry(2,2,27.5,32),new THREE.MeshPhongMaterial({color:0xffffff}));
+  pole16.position.set(-17,0,-15);
+  pole16.rotation.x=Math.PI/8
+  
+  let pointer3 = new THREE.Mesh(geometry,material);
+  pointer3.rotation.y=Math.PI/2;
+  pointer3.position.set(17,12.5,0)
+  let pointer4 = new THREE.Mesh(geometry,material);
+  pointer4.rotation.y=Math.PI/2;
+  pointer4.position.set(-17,12.5,0)
+  var goal2=new THREE.Group();
+  goal2.add(pointer3,pointer4,pole9,pole10,pole11,pole12,pole13,pole14,pole15,pole16,net3,net4);
+  scene.add(goal2);
+  goal2.position.set(25,11,-125)
+  goal2.rotation.y=Math.PI;
+  class2.add(goal2)
+  
 }
-function buildChess(){
-	let class3chess = [];
-	var R=10;
-  
-  var loader = new THREE.TextureLoader(); 
-  var textureTest1 = loader.load('https://i.imgur.com/Lae2wkX.jpg');  
-  let material1 = new THREE.MeshBasicMaterial({
-        map: textureTest1,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1.0
-  });
-  
-  var checkerboard = new THREE.Mesh(new THREE.PlaneGeometry(210,210),material1);
-  checkerboard.position.set(0,1.1,250);
-  scene.add(checkerboard);
-  checkerboard.rotation.x=Math.PI/2;
-  
-  let material2 = new THREE.MeshBasicMaterial({
-	    color:'white',
-		side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1.0
-  });
-    var loader2 = new THREE.TextureLoader(); 
-    var redgeneraltexture = loader2.load('https://i.imgur.com/aO31H9z.png');
-    let materialredgeneral = new THREE.MeshBasicMaterial({
-        map: redgeneraltexture,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1.0
-	})
-	
-	var loader3 = new THREE.TextureLoader(); 
-    var redcartexture = loader3.load('https://i.imgur.com/HCeXYAT.png');
-    let materialredcar = new THREE.MeshBasicMaterial({
-        map: redcartexture,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1.0
-	})
-	
-	var loader4 = new THREE.TextureLoader(); 
-    var redelephanttexture = loader4.load('https://i.imgur.com/KC4RZtT.png');
-    let materialredelephant = new THREE.MeshBasicMaterial({
-        map: redelephanttexture,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1.0
-	})
-	
-	var loader5 = new THREE.TextureLoader(); 
-    var redadvisortexture = loader5.load('https://i.imgur.com/lwoFpHE.png');
-    let materialredadvisor = new THREE.MeshBasicMaterial({
-        map: redadvisortexture,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1.0
-	})
-	
-	var loader6 = new THREE.TextureLoader(); 
-    var redcannontexture = loader6.load('https://i.imgur.com/nJ9TJVR.png');
-    let materialredcannon = new THREE.MeshBasicMaterial({
-        map: redcannontexture,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1.0
-	})
-	
-	var loader7 = new THREE.TextureLoader(); 
-    var redhorsetexture = loader7.load('https://i.imgur.com/6weigeS.png');
-    let materialredhorse = new THREE.MeshBasicMaterial({
-        map: redhorsetexture,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1.0
-	})
-	
-	var loader8 = new THREE.TextureLoader(); 
-    var redsoldiertexture = loader8.load('https://i.imgur.com/sf23hO7.png');
-    let materialredsoldier = new THREE.MeshBasicMaterial({
-        map: redsoldiertexture,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1.0
-	})
-	
-	var loader9 = new THREE.TextureLoader(); 
-    var blackgeneraltexture = loader9.load('https://i.imgur.com/JYQ2LmP.png');
-    let materialblackgeneral = new THREE.MeshBasicMaterial({
-        map: blackgeneraltexture,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1.0
-	})
-	
-	var loader10 = new THREE.TextureLoader(); 
-    var blackcartexture = loader10.load('https://i.imgur.com/wMO7i5j.png');
-    let materialblackcar = new THREE.MeshBasicMaterial({
-        map: blackcartexture,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1.0
-	})
-	
-	var loader11 = new THREE.TextureLoader(); 
-    var blackhorsetexture = loader11.load('https://i.imgur.com/Hnjciy6.png');
-    let materialblackhorse = new THREE.MeshBasicMaterial({
-        map: blackhorsetexture,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1.0
-	})
-	
-	var loader12 = new THREE.TextureLoader(); 
-    var blackelephanttexture = loader12.load('https://i.imgur.com/IMYXLzC.png');
-    let materialblackelephant = new THREE.MeshBasicMaterial({
-        map: blackelephanttexture,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1.0
-	})
-	
-	var loader13 = new THREE.TextureLoader(); 
-    var blackcannontexture = loader13.load('https://i.imgur.com/m2G0nWr.png');
-    let materialblackcannon = new THREE.MeshBasicMaterial({
-        map: blackcannontexture,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1.0
-	})
-	
-	var loader14 = new THREE.TextureLoader(); 
-    var blacksoldiertexture = loader14.load('https://i.imgur.com/yuk9Zo1.png');
-    let materialblacksoldier = new THREE.MeshBasicMaterial({
-        map: blacksoldiertexture,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1.0
-	})
-	
-	var loader15 = new THREE.TextureLoader(); 
-    var blackadvisortexture = loader15.load('https://i.imgur.com/vmlMtI5.png');
-    let materialblackadvisor = new THREE.MeshBasicMaterial({
-        map: blackadvisortexture,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1.0
-	})
-  
-  var redcar1G = new THREE.Group();
-  let redcar1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let redcar1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredcar);
-  redcar1skin.position.set(0,2.6,0);
-  redcar1skin.rotation.x=-Math.PI/2;
-  redcar1.R=R;
-  redcar1.height=5;
-  redcar1.ID="wall";
-  redcar1G.add(redcar1,redcar1skin);
-  class3chess.push(redcar1G);
-  class3chess[0].position.set(-98,3.6,347);
-  
-  var redelephant1G = new THREE.Group();
-  let redelephant1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let redelephant1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredelephant);
-  redelephant1skin.position.set(0,2.6,0);
-  redelephant1skin.rotation.x=-Math.PI/2;
-  redelephant1.R=R;
-  redelephant1.height=5;
-  redelephant1.ID="wall";
-  redelephant1G.add(redelephant1,redelephant1skin);
-  class3chess.push(redelephant1G);
-  class3chess[1].position.set(-48,3.6,347);
-  
-  var redadvisor1G = new THREE.Group();
-  let redadvisor1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let redadvisor1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredadvisor);
-  redadvisor1skin.position.set(0,2.6,0);
-  redadvisor1skin.rotation.x=-Math.PI/2;
-  redadvisor1.R=R;
-  redadvisor1.height=5;
-  redadvisor1.ID="wall";
-  redadvisor1G.add(redadvisor1,redadvisor1skin);
-  class3chess.push(redadvisor1G);
-  class3chess[2].position.set(-23,3.6,347);
-  
-  var redgeneralG = new THREE.Group();
-  let redgeneral =new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let redgeneralskin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredgeneral);
-  redgeneralskin.position.set(0,2.6,0);
-  redgeneralskin.rotation.x=-Math.PI/2;
-  redgeneral.R=R;
-  redgeneral.height=5;
-  redgeneral.ID="wall";
-  redgeneralG.add(redgeneral,redgeneralskin);
-  class3chess.push(redgeneralG);
-  class3chess[3].position.set(2,3.6,347);
-  
-  
-  
-  var redadvisor2G = new THREE.Group();
-  let redadvisor2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let redadvisor2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredadvisor);
-  redadvisor2skin.position.set(0,2.6,0);
-  redadvisor2skin.rotation.x=-Math.PI/2;
-  redadvisor2.R=R;
-  redadvisor2.height=5;
-  redadvisor2.ID="wall";
-  redadvisor2G.add(redadvisor2,redadvisor2skin);
-  class3chess.push(redadvisor2G);
-  class3chess[4].position.set(27,3.6,347);
-  
-  var redcar2G = new THREE.Group();
-  let redcar2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let redcar2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredcar);
-  redcar2skin.position.set(0,2.6,0);
-  redcar2skin.rotation.x=-Math.PI/2;
-  redcar2.R=R;
-  redcar2.height=5;
-  redcar2.ID="wall";
-  redcar2G.add(redcar2,redcar2skin);
-  class3chess.push(redcar2G);
-  class3chess[5].position.set(77,3.6,347);
-  
-  var redcannon1G = new THREE.Group();
-  let redcannon1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let redcannon1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredcannon);
-  redcannon1skin.position.set(0,2.6,0);
-  redcannon1skin.rotation.x=-Math.PI/2;
-  redcannon1.R=R;
-  redcannon1.height=5;
-  redcannon1.ID="wall";
-  redcannon1G.add(redcannon1,redcannon1skin);
-  class3chess.push(redcannon1G);
-  class3chess[6].position.set(-23,3.6,305);
-  
-  var redelephant2G = new THREE.Group();
-  let redelephant2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let redelephant2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredelephant);
-  redelephant2skin.position.set(0,2.6,0);
-  redelephant2skin.rotation.x=-Math.PI/2;
-  redelephant2.R=R;
-  redelephant2.height=5;
-  redelephant2.ID="wall";
-  redelephant2G.add(redelephant2,redelephant2skin);
-  class3chess.push(redelephant2G);
-  class3chess[7].position.set(2,3.6,305);
-  
-  var redhorse1G = new THREE.Group();
-  let redhorse1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let redhorse1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredhorse);
-  redhorse1skin.position.set(0,2.6,0);
-  redhorse1skin.rotation.x=-Math.PI/2;
-  redhorse1.R=R;
-  redhorse1.height=5;
-  redhorse1.ID="wall";
-  redhorse1G.add(redhorse1,redhorse1skin);
-  class3chess.push(redhorse1G);
-  class3chess[8].position.set(52,3.6,305);
-  
-  var redsoldier1G = new THREE.Group();
-  let redsoldier1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let redsoldier1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredsoldier);
-  redsoldier1skin.position.set(0,2.6,0);
-  redsoldier1skin.rotation.x=-Math.PI/2;
-  redsoldier1.R=R;
-  redsoldier1.height=5;
-  redsoldier1.ID="wall";
-  redsoldier1G.add(redsoldier1,redsoldier1skin);
-  class3chess.push(redsoldier1G);
-  class3chess[9].position.set(-98,3.6,282);
-  
-  var redsoldier2G = new THREE.Group();
-  let redsoldier2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let redsoldier2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredsoldier);
-  redsoldier2skin.position.set(0,2.6,0);
-  redsoldier2skin.rotation.x=-Math.PI/2;
-  redsoldier2.R=R;
-  redsoldier2.height=5;
-  redsoldier2.ID="wall";
-  redsoldier2G.add(redsoldier2,redsoldier2skin);
-  class3chess.push(redsoldier2G);
-  class3chess[10].position.set(2,3.6,282);
-  
-  var redsoldier3G = new THREE.Group();
-  let redsoldier3 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let redsoldier3skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredsoldier);
-  redsoldier3skin.position.set(0,2.6,0);
-  redsoldier3skin.rotation.x=-Math.PI/2;
-  redsoldier3.R=R;
-  redsoldier3.height=5;
-  redsoldier3.ID="wall";
-  redsoldier3G.add(redsoldier3,redsoldier3skin);
-  class3chess.push(redsoldier3G);
-  class3chess[11].position.set(52,3.6,282);
-  
-  var redsoldier4G = new THREE.Group();
-  let redsoldier4 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let redsoldier4skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredsoldier);
-  redsoldier4skin.position.set(0,2.6,0);
-  redsoldier4skin.rotation.x=-Math.PI/2;
-  redsoldier4.R=R;
-  redsoldier4.height=5;
-  redsoldier4.ID="wall";
-  redsoldier4G.add(redsoldier4,redsoldier4skin);
-  class3chess.push(redsoldier4G);
-  class3chess[12].position.set(98,3.6,282);
-  
-  var redcannon2G = new THREE.Group();
-  let redcannon2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let redcannon2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredcannon);
-  redcannon2skin.position.set(0,2.6,0);
-  redcannon2skin.rotation.x=-Math.PI/2;
-  redcannon2.R=R;
-  redcannon2.height=5;
-  redcannon2.ID="wall";
-  redcannon2G.add(redcannon2,redcannon2skin);
-  class3chess.push(redcannon2G);
-  class3chess[13].position.set(-73,3.6,262);
-  
-  redhorse2G = new THREE.Group();
-  let redhorse2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let redhorse2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialredhorse);
-  redhorse2skin.position.set(0,2.6,0);
-  redhorse2skin.rotation.x=-Math.PI/2;
-  redhorse2.R=R;
-  redhorse2.height=5;
-  redhorse2.ID="wall";
-  redhorse2G.add(redhorse2,redhorse2skin);
-  class3chess.push(redhorse2G);
-  class3chess[14].position.set(-23,3.6,262);
-  
-  var blackcar1G = new THREE.Group();
-  let blackcar1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let blackcar1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackcar);
-  blackcar1skin.position.set(0,2.6,0);
-  blackcar1skin.rotation.x=-Math.PI/2;
-  blackcar1.R=R;
-  blackcar1.height=5;
-  blackcar1.ID="wall";
-  blackcar1G.add(blackcar1,blackcar1skin);
-  class3chess.push(blackcar1G);
-  class3chess[15].position.set(-48,3.6,237);
-  
-  var blacksoldier1G = new THREE.Group();
-  let blacksoldier1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let blacksoldier1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblacksoldier);
-  blacksoldier1skin.position.set(0,2.6,0);
-  blacksoldier1skin.rotation.x=-Math.PI/2;
-  blacksoldier1.R=R;
-  blacksoldier1.height=5;
-  blacksoldier1.ID="wall";
-  blacksoldier1G.add(blacksoldier1,blacksoldier1skin);
-  class3chess.push(blacksoldier1G);
-  class3chess[16].position.set(52,3.6,237);
-  
-  var blacksoldier2G = new THREE.Group();
-  let blacksoldier2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let blacksoldier2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblacksoldier);
-  blacksoldier2skin.position.set(0,2.6,0);
-  blacksoldier2skin.rotation.x=-Math.PI/2;
-  blacksoldier2.R=R;
-  blacksoldier2.height=5;
-  blacksoldier2.ID="wall";
-  blacksoldier2G.add(blacksoldier2,blacksoldier2skin);
-  class3chess.push(blacksoldier2G);
-  class3chess[17].position.set(-98,3.6,217);
-  
-  var blacksoldier3G = new THREE.Group();
-  let blacksoldier3 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let blacksoldier3skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblacksoldier);
-  blacksoldier3skin.position.set(0,2.6,0);
-  blacksoldier3skin.rotation.x=-Math.PI/2;
-  blacksoldier3.R=R;
-  blacksoldier3.height=5;
-  blacksoldier3.ID="wall";
-  blacksoldier3G.add(blacksoldier3,blacksoldier3skin);
-  class3chess.push(blacksoldier3G);
-  class3chess[18].position.set(2,3.6,217);
-  
-  var blacksoldier4G = new THREE.Group();
-  let blacksoldier4 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let blacksoldier4skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblacksoldier);
-  blacksoldier4skin.position.set(0,2.6,0);
-  blacksoldier4skin.rotation.x=-Math.PI/2;
-  blacksoldier4.R=R;
-  blacksoldier4.height=5;
-  blacksoldier4.ID="wall";
-  blacksoldier4G.add(blacksoldier4,blacksoldier4skin);
-  class3chess.push(blacksoldier4G);
-  class3chess[19].position.set(98,3.6,217);
-  
-  var blackcannon1G = new THREE.Group();
-  let blackcannon1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let blackcannon1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackcannon);
-  blackcannon1skin.position.set(0,2.6,0);
-  blackcannon1skin.rotation.x=-Math.PI/2;
-  blackcannon1.R=R;
-  blackcannon1.height=5;
-  blackcannon1.ID="wall";
-  blackcannon1G.add(blackcannon1,blackcannon1skin);
-  class3chess.push(blackcannon1G);
-  class3chess[20].position.set(-23,3.6,217);
-  
-  var blackelephant1G = new THREE.Group();
-  let blackelephant1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let blackelephant1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackelephant);
-  blackelephant1skin.position.set(0,2.6,0);
-  blackelephant1skin.rotation.x=-Math.PI/2;
-  blackelephant1.R=R;
-  blackelephant1.height=5;
-  blackelephant1.ID="wall";
-  blackelephant1G.add(blackelephant1,blackelephant1skin);
-  class3chess.push(blackelephant1G);
-  class3chess[21].position.set(2,3.6,194);
-  
-  var blackhorse1G = new THREE.Group();
-  let blackhorse1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let blackhorse1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackhorse);
-  blackhorse1skin.position.set(0,2.6,0);
-  blackhorse1skin.rotation.x=-Math.PI/2;
-  blackhorse1.R=R;
-  blackhorse1.height=5;
-  blackhorse1.ID="wall";
-  blackhorse1G.add(blackhorse1,blackhorse1skin);
-  class3chess.push(blackhorse1G);
-  class3chess[22].position.set(52,3.6,194);
-  
-  var blackhorse2G = new THREE.Group();
-  let blackhorse2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let blackhorse2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackhorse);
-  blackhorse2skin.position.set(0,2.6,0);
-  blackhorse2skin.rotation.x=-Math.PI/2;
-  blackhorse2.R=R;
-  blackhorse2.height=5;
-  blackhorse2.ID="wall";
-  blackhorse2G.add(blackhorse2,blackhorse2skin);
-  class3chess.push(blackhorse2G);
-  class3chess[23].position.set(-23,3.6,171);
-  
-  var blackadvisor1G = new THREE.Group();
-  let blackadvisor1 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let blackadvisor1skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackadvisor);
-  blackadvisor1skin.position.set(0,2.6,0);
-  blackadvisor1skin.rotation.x=-Math.PI/2;
-  blackadvisor1.R=R;
-  blackadvisor1.height=5;
-  blackadvisor1.ID="wall";
-  blackadvisor1G.add(blackadvisor1,blackadvisor1skin);
-  class3chess.push(blackadvisor1G);
-  class3chess[24].position.set(-23,3.6,150);
-  
-  var blackgeneralG = new THREE.Group();
-  let blackgeneral = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let blackgeneralskin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackgeneral);
-  blackgeneralskin.position.set(0,2.6,0);
-  blackgeneralskin.rotation.x=-Math.PI/2;
-  blackgeneral.R=R;
-  blackgeneral.height=5;
-  blackgeneral.ID="wall";
-  blackgeneralG.add(blackgeneral,blackgeneralskin);
-  class3chess.push(blackgeneralG);
-  class3chess[25].position.set(2,3.6,150);
-  
-  var blackadvisor2G = new THREE.Group();
-  let blackadvisor2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let blackadvisor2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackadvisor);
-  blackadvisor2skin.position.set(0,2.6,0);
-  blackadvisor2skin.rotation.x=-Math.PI/2;
-  blackadvisor2.R=R;
-  blackadvisor2.height=5;
-  blackadvisor2.ID="wall";
-  blackadvisor2G.add(blackadvisor2,blackadvisor2skin);
-  class3chess.push(blackadvisor2G);
-  class3chess[26].position.set(27,3.6,150);
-  
-  var blackelephant2G = new THREE.Group();
-  let blackelephant2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let blackelephant2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackelephant);
-  blackelephant2skin.position.set(0,2.6,0);
-  blackelephant2skin.rotation.x=-Math.PI/2;
-  blackelephant2.R=R;
-  blackelephant2.height=5;
-  blackelephant2.ID="wall";
-  blackelephant2G.add(blackelephant2,blackelephant2skin);
-  class3chess.push(blackelephant2G);
-  class3chess[27].position.set(52,3.6,150);
-  
-  var blackcar2G = new THREE.Group();
-  let blackcar2 = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 5, 32 ),material2);
-  let blackcar2skin =new THREE.Mesh(new THREE.CircleGeometry(R,32),materialblackcar);
-  blackcar2skin.position.set(0,2.6,0);
-  blackcar2skin.rotation.x=-Math.PI/2;
-  blackcar2.R=R;
-  blackcar2.height=5;
-  blackcar2.ID="wall";
-  blackcar2G.add(blackcar2,blackcar2skin);
-  class3chess.push(blackcar2G);
-  class3chess[28].position.set(77,3.6,150);
-  
-  var signtexture=loader2.load('https://i.imgur.com/LmuQAag.png')
-  var wood = new THREE.Mesh(new THREE.PlaneGeometry(40,20),new THREE.MeshBasicMaterial({
-        color: 0xD26900,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1
-  }));
-  var sign = new THREE.Mesh(new THREE.PlaneGeometry(40,20),new THREE.MeshBasicMaterial({
-        map: signtexture,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 1
-  }));
-  sign.position.set(87,7,275);
-  wood.position.set(87.3,5,275);
-  sign.rotation.y=Math.PI/2;
-  wood.rotation.y=Math.PI/2;
-  scene.add(sign,wood);
-  
-  
-     for(var i = 0; i <=28; i++){
-	  scene.add(class3chess[i]);
-	  class3.add(class3chess[i].clone());
-	 }
-  
-  return class3chess;
-	
-}
-function setClassVisible(level){
-	
-		class1Rotate.visible = false;
-		class2Rotate.visible = false;
-		class3Rotate.visible = false;		
-	if(level === 1) {
-		class1Rotate.visible = true;
-	}
-	else if(level === 2)
-		class2Rotate.visible = true;
-	else if(level === 3)
-		class3Rotate.visible = true;
-}
-export {buildTerrain,table1,table2,planes,walls,cylinders,holes,floors,arcWalls}
+export {buildTerrain,table1,planes,walls,cylinders,holes,floors,arcWalls}
 export {class1Rotate,class2Rotate,class3Rotate,setClassVisible}
-export {obstacle1,obstacle2,obstacle3,car,car2,redhorse2G}
+export {obstacle1,obstacle2,obstacle3,car,car2,redhorse2G,steveg,wall49,wall50,wall51,smallEraser1,smallEraser2,pressButton,textureTest,ctexture}

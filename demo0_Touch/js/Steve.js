@@ -175,75 +175,106 @@ class Steve{
     var map = loader.load("https://i.imgur.com/ifTuBvu.png");
    this.left=new THREE.Mesh(new THREE.PlaneGeometry(4, 6), new THREE.MeshBasicMaterial({
     map: map,
-    transparent: true
+    transparent: true,
+	depthWrite : false,
+	depthTest : false
   }));
   this.left2=new THREE.Mesh(new THREE.PlaneGeometry(4, 6), new THREE.MeshBasicMaterial({
     map: map,
-    transparent: true
+    transparent: true,
+	depthWrite : false,
+	depthTest : false
   }));
   this.left3=new THREE.Mesh(new THREE.PlaneGeometry(4, 6), new THREE.MeshBasicMaterial({
     map: map,
-    transparent: true
+    transparent: true,
+	depthWrite : false,
+	depthTest : false
   }));
   this.left4=new THREE.Mesh(new THREE.PlaneGeometry(4, 6), new THREE.MeshBasicMaterial({
     map: map,
-    transparent: true
+    transparent: true,
+	depthWrite : false,
+	depthTest : false
   }));
-  var  loader2 = new THREE.TextureLoader();
-  var  map2 = loader2.load("https://i.imgur.com/DZ2BjPS.png");
+  var  map2 = loader.load("https://i.imgur.com/DZ2BjPS.png");
    this.right=new THREE.Mesh(new THREE.PlaneGeometry(4, 6), new THREE.MeshBasicMaterial({
     map: map2,
-    transparent: true
+    transparent: true,
+	depthWrite : false,
+	depthTest : false
   }));
   this.right2=new THREE.Mesh(new THREE.PlaneGeometry(4, 6), new THREE.MeshBasicMaterial({
     map: map2,
-    transparent: true
+    transparent: true,
+	depthWrite : false,
+	depthTest : false
   }));
   this.right3=new THREE.Mesh(new THREE.PlaneGeometry(4, 6), new THREE.MeshBasicMaterial({
     map: map2,
-    transparent: true
+    transparent: true,
+	depthWrite : false,
+	depthTest : false
   }));
   this.right4=new THREE.Mesh(new THREE.PlaneGeometry(4, 6), new THREE.MeshBasicMaterial({
     map: map2,
-    transparent: true
+    transparent: true,
+	depthWrite : false,
+	depthTest : false
   }));
   
-  this.right.position.set(2,0.1,0);
-  this.left.position.set(-2,0.1,0);
+  this.right.position.set(2,1,0);
+  this.left.position.set(-2,1,0);
   this.right.rotation.x=-Math.PI/2;
   this.left.rotation.x=-Math.PI/2;
   this.left.material.opacity=0;
   this.right.material.opacity=0;
+  /*
+  this.left.visible = false;
+  this.right.visible = false;
+  */
   this.footPath.add(this.right);
   this.footPath.add(this.left);
   scene.add(this.footPath);  
   
-  this.right2.position.set(2,0.1,0);
-  this.left2.position.set(-2,0.1,0);
+  this.right2.position.set(2,1,0);
+  this.left2.position.set(-2,1,0);
   this.right2.rotation.x=-Math.PI/2;
   this.left2.rotation.x=-Math.PI/2;
   this.left2.material.opacity=0;
   this.right2.material.opacity=0;
+  /*
+  this.left2.visible = false;
+  this.right2.visible = false;
+  */
   this.footPath2.add(this.right2);
   this.footPath2.add(this.left2);
   scene.add(this.footPath2);
   
-  this.right3.position.set(2,0.1,0);
-  this.left3.position.set(-2,0.1,0);
+  this.right3.position.set(2,1,0);
+  this.left3.position.set(-2,1,0);
   this.right3.rotation.x=-Math.PI/2;
   this.left3.rotation.x=-Math.PI/2;
   this.left3.material.opacity=0;
   this.right3.material.opacity=0;
+  /*
+  this.left3.visible = false;
+  this.right3.visible = false;
+  */
   this.footPath3.add(this.right3);
   this.footPath3.add(this.left3);
   scene.add(this.footPath3);
   
-  this.right4.position.set(2,0.1,0);
-  this.left4.position.set(-2,0.1,0);
+  this.right4.position.set(2,1,0);
+  this.left4.position.set(-2,1,0);
   this.right4.rotation.x=-Math.PI/2;
   this.left4.rotation.x=-Math.PI/2;
   this.left4.material.opacity=0;
   this.right4.material.opacity=0;
+  /*
+  this.left4.visible = false;
+  this.right4.visible = false;
+  */
   this.footPath4.add(this.right4);
   this.footPath4.add(this.left4);
   scene.add(this.footPath4);  
@@ -317,8 +348,7 @@ class Steve{
 		   this.left4.material.opacity=0;
 	       this.right4.material.opacity=0.2;
 		}			
-     
-     }	 
+     }
 	 
    this.temp3.copy(this.temp2);
    this.temp2.copy(this.temp);
@@ -340,8 +370,8 @@ class Steve{
         this.right3.material.opacity=0;
 		this.left4.material.opacity=0;
         this.right4.material.opacity=0;
-		//this.direct.position.copy(balls[0].pos)
-		//this.direct.rotation.copy(this.camera.rotation)
+		this.direct.position.copy(balls[0].pos)
+		this.direct.rotation.copy(this.camera.rotation)
 		count=1;
 		this.moveFin = true;
 	}
