@@ -728,10 +728,6 @@ function HUDPress(){
 	if(Math.abs(touch.x) <= 0.4 && Math.abs(touch.y) <= 0.4){
 	    if(start === false){
 			start = true;
-			var source = context.createBufferSource();
-            source.buffer = inholeSoundBuffer;
-            source.connect(context.destination);
-            source.start();
 			startButton.visible = false
 			switchCamera = 1;
 			chooseLevelButton.visible = true;
@@ -743,6 +739,10 @@ function HUDPress(){
 			balls[1].start();
 			steve.start();
 			modeChose = true;
+			var source = context.createBufferSource();
+            source.buffer = inholeSoundBuffer;
+            source.connect(context.destination);
+            source.start();
 			mode = 0 // 標準
 			level = 1;
 			levelChangeButton.children[2].visible = false;
@@ -754,6 +754,10 @@ function HUDPress(){
 		}
 		else if (between(touch.x,-0.1,-1) && between(touch.y,-0.1,-0.33)){
 			modeChose = true;
+			var source = context.createBufferSource();
+            source.buffer = inholeSoundBuffer;
+            source.connect(context.destination);
+            source.start();
 			mode = 1 // 練習
 			levelChangeButton.children[1].visible = false;
 			levelChose = false;
